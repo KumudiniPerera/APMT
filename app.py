@@ -5,7 +5,7 @@ import bcrypt
 
 from user import User
 
-from forms import SignupForm, LoginForm, TaskForm
+from forms import SignupForm, LoginForm, TaskForm, ProjectForm
 
 import yaml
 
@@ -34,20 +34,22 @@ def signup():
     if form.validate_on_submit():  
 
         #Fetch data
-        #userDetails = request.form
+        userDetails = request.form
 
-        #username = (userDetails['username'])
-        #email = (userDetails['email'])
-        #password = (userDetails['pass'].encode('utf-8'))
+        username = userDetails['username']
+        email = userDetails['email']
+        password = userDetails['password'].encode('utf-8')
+        hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
+
+        #username = form.username.data
+        #email = form.email.data
+        #password = (form.password.data).encode('utf-8')
         #hash_password = (bcrypt.hashpw(password, bcrypt.gensalt()))
-
-        username = form.username.data
-        email = form.email.data
-        password = (form.password.data).encode('utf-8')
-        hash_password = (bcrypt.hashpw(password, bcrypt.gensalt()))
     
         cur = mysql.connection.cursor()
-        cur.execute ("INSERT INTO `user`(`UserName`, `Email`, `Password`) VALUES (%s, %s, %s)",(username ,email, hash_password ))
+        cur.execute("SELECT `UserId` FROM `user`")
+        maxid = cur.fetchone()
+        cur.execute ("INSERT INTO `user`(`UserId`, `UserName`, `Email`, `Password`) VALUES (%s, %s, %s, %s)",(maxid[0] + 1,username ,email, hash_password ))
         mysql.connection.commit()
 
         session['name'] = username
@@ -113,6 +115,30 @@ def notifications():
 def tasks():
     form =TaskForm()
     return render_template('task.html', form=form)
+
+@app.route('/project', methods= ['GET','POST'])
+def project():
+
+    form =ProjectForm(request.form)
+
+    if form.validate_on_submit():  
+        
+        projectDetails = request.form
+
+        project_name = (projectDetails['project_name'])
+        client_name = (projectDetails['client_name'])
+        technology = (projectDetails['technology'])
+    
+        print(project_name)
+        cur = mysql.connection.cursor()
+        cur.execute ("INSERT INTO `project`(`Project_Name`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(project_name ,client_name, technology ))
+        mysql.connection.commit()
+
+        cur.close()
+
+        return redirect(url_for('project' ))
+
+    return render_template('project.html', form=form)
 
 if __name__ == "__main__":
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'

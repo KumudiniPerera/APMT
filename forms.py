@@ -17,8 +17,16 @@ class LoginForm(FlaskForm):
 
 class TaskForm(FlaskForm):
     task_name = StringField('User Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Task Name"})
-    project_name = StringField('Project Name', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Project Name"})
+    projectname = StringField('Project Name', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Project Name"})
     assignee = StringField('Assignee Name', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Assignee Name"})
     due_date = DateField('Due Date' ,render_kw={"placeholder": "Due Date"})
     status = SelectField(u'Status', choices=[('In Progress','In Progress' ), ('Completed', 'Completed'), ('Hold', 'Hold')])
     task_description = TextAreaField('Task Description' , validators= [DataRequired(), Length(max =200)], render_kw={"placeholder": "Task Description"})
+
+######################################################################################################################################################################
+
+class ProjectForm(FlaskForm):
+    project_name = StringField('Project Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Project Name"})
+    client_name = StringField('Client Name', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Client Name"})
+    technology = StringField('Technology', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Technolgy"})
+    

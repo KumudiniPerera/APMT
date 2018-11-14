@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <link rel="stylesheet" href="../static/css/form.css" >
-        <script src="form.js"></script>
+        <script src="../static/js/form.js"></script>
     </head>
     <body >
         <div class="container">
@@ -27,7 +27,7 @@
                 <div class="col-md-6 col-md-offset-3">
                     <h2>Add a Task</h2> 
 <!--                  <p> Send us your message and we will get back to you as soon as possible </p>> -->
-                    <form role="form" method="post" id="reused_form">
+                    <form role="form" method="GET" id="reused_form" action="">
                         <div class="row">
                             <div class="col-sm-12 form-group">
                                 <label for="name"> Task Name:</label>
@@ -37,7 +37,7 @@
                         <div class="row">
                             <div class="col-sm-6 form-group">
                                 <label for="name"> Project Name:</label>
-                                {{ form.project_name(class="form-control")}}
+                                {{ form.project(class="form-control")}}
                             </div>
                             <div class="col-sm-6 form-group">
                                 <label for="name"> Assignee Name:</label>

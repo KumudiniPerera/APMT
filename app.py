@@ -9,6 +9,8 @@ from forms import SignupForm, LoginForm, TaskForm, ProjectForm
 
 import yaml
 
+import sys
+
 app = Flask(__name__)
 
 #Configure DB
@@ -17,7 +19,7 @@ app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DB'] = db['mysql_db']
 app.config['MYSQL_HOST'] = db['mysql_host']
-
+app.config['SECRET_KEY'] = 'any secret string'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
@@ -30,9 +32,8 @@ def main():
 def signup():
     
     form = SignupForm(request.form)
-
-    if form.validate_on_submit():  
-
+    
+    if (form.validate_on_submit()):  
         #Fetch data
         userDetails = request.form
 
@@ -40,16 +41,16 @@ def signup():
         email = userDetails['email']
         password = userDetails['password'].encode('utf-8')
         hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
-
+        
         #username = form.username.data
         #email = form.email.data
         #password = (form.password.data).encode('utf-8')
         #hash_password = (bcrypt.hashpw(password, bcrypt.gensalt()))
-    
+        
         cur = mysql.connection.cursor()
         cur.execute("SELECT `UserId` FROM `user`")
         maxid = cur.fetchone()
-        cur.execute ("INSERT INTO `user`(`UserId`, `UserName`, `Email`, `Password`) VALUES (%s, %s, %s, %s)",(maxid[0] + 1,username ,email, hash_password ))
+        cur.execute ("INSERT INTO `user`(`UserName`, `Email`, `Password`) VALUES (%s, %s, %s)",(username ,email, hash_password ))
         mysql.connection.commit()
 
         session['name'] = username
@@ -58,12 +59,13 @@ def signup():
         cur.close()
 
         return redirect(url_for('main' )) 
-
-    return render_template('signup.html' , form = form )
+    else:
+        #use the below function to see the errors in validation
+        print(form.errors)
+        return render_template('signup.html' , form = form )
         
 @app.route('/', methods= ['GET','POST'])
 def login():
-
     form = LoginForm()
 
     if request.method == 'POST':

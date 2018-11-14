@@ -30,7 +30,8 @@ def signup():
     
     form = SignupForm(request.form)
     
-    if request.method  == 'GET':
+    if form.validate_on_submit():
+    #if request.method  == 'GET':
         #Fetch data
         userDetails = request.form
 
@@ -107,8 +108,8 @@ def notifications():
 @app.route('/task', methods= ['GET','POST'])
 def tasks():
     form =TaskForm()
-
-    if request.method == 'GET': 
+    
+    if request.method == 'GET':
         
         task_name = request.args.get('task_name', '')
         project = request.args.get('project', '')
@@ -123,7 +124,7 @@ def tasks():
 
         cur.close()
 
-        redirect(url_for('project'))
+        redirect(url_for('main'))
 
     return render_template('task.html', form=form)
 
@@ -132,17 +133,14 @@ def project():
 
     form =ProjectForm()
 
-    if request.method == 'GET': 
+    if request.method == 'GET':
         
-        project_name = request.args.get('project_name', '')
-        client_name = request.args.get('client_name', '')
+        projectName = request.args.get('projectName', '')
+        clientName = request.args.get('clientName', '')
         technology = request.args.get('technology', '')
-    
-        print(project_name)
-        print(client_name)
-        print(technology)    
+   
         cur = mysql.connection.cursor()
-        cur.execute ("INSERT INTO `project`(`Project_Name`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(project_name ,client_name, technology ))
+        cur.execute ("INSERT INTO `project`(`Project_Name`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(projectName ,clientName, technology ))
         mysql.connection.commit()
 
         cur.close()

@@ -26,7 +26,7 @@ class TaskForm(FlaskForm):
 ######################################################################################################################################################################
 
 class ProjectForm(FlaskForm):
-    project_name = StringField('Project Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Project Name"})
-    client_name = StringField('Client Name', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Client Name"})
+    projectName = StringField('Project Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Project Name"})
+    clientName = StringField('Client Name', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Client Name"})
     technology = StringField('Technology', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Technolgy"})
     

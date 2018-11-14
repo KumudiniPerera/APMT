@@ -2,8 +2,11 @@
  
  A project management tool using Python Flask
  
- Install Flask : "pip install Flask"
+ prerequisite:
  
- Install Flask-MySQLdb : "pip install flask-mysqldb"
+  Install Flask : "pip install Flask"
+ 
+  Install Flask-MySQLdb : "pip install flask-mysqldb"
 
- Run : Python app.py
+ Run : 
+  Python app.py

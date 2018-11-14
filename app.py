@@ -118,19 +118,19 @@ def tasks():
         task_description = request.args.get('task_description', '')
     
         cur = mysql.connection.cursor()
-        cur.execute ("INSERT INTO `task`(`Task_Name`, `Task_description`, `Due_Date`, `Status`, `Project_Name`, `Assignee`) VALUES (%s, %s, %s, %s, %s, %s)",(task_name, project, assignee, due_date, status, task_description ))
+        cur.execute ("INSERT INTO `task`(`Task_Name`, `Task_description`, `Due_Date`, `Status`, `Project_Name`, `Assignee`) VALUES (%s, %s, %s, %s, %s, %s)",(task_name, task_description, due_date, status, project, assignee  ))
         mysql.connection.commit()
 
         cur.close()
 
-        return redirect(url_for('project'))
+        redirect(url_for('project'))
 
     return render_template('task.html', form=form)
 
 @app.route('/project', methods= ['GET','POST'])
 def project():
 
-    form =ProjectForm(request.form)
+    form =ProjectForm()
 
     if request.method == 'GET': 
         

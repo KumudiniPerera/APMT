@@ -17,9 +17,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <link rel="stylesheet" href="../static/css/form.css" >
-        <script src="../static/js/form.js"></script>
     </head>
     <body >
         <div class="container">
@@ -36,13 +34,16 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-6 form-group">
-                                <label for="name"> Project Name:</label>
-                                {{ form.project(class="form-control")}}
-                            </div>
-                            <div class="col-sm-6 form-group">
                                 <label for="name"> Assignee Name:</label>
                                 {{ form.assignee(class="form-control")}}
                             </div>
+
+                            <div class="col-sm-6 form-group">
+                                <label for="name"> Project Name:</label>
+                                {{ form.project(class="form-control")}}
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6 form-group">
                                 <label for="name"> Due Date:</label>
                                 {{ form.due_date(class="form-control")}}

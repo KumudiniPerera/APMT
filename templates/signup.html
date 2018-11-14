@@ -23,6 +23,7 @@
                         <h2 class="form-title">Sign up</h2>
                         <form method="POST" class="register-form" id="register-form" action="">
                                 {{ form.hidden_tag() }}
+                                {{ form.csrf_token }} 
                                 <div class = "form-group" >
                                     <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
                                     {{ form.username(class="form-control-label")}}

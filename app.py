@@ -27,7 +27,7 @@ def main():
 
 @app.route('/signup', methods= ['GET','POST'])
 def signup():
-    
+
     form = SignupForm(request.form)
     
     #if form.validate_on_submit():
@@ -109,15 +109,17 @@ def notifications():
 def tasks():
     form =TaskForm()
     
-    if request.method == 'GET':
+    if request.method == 'POST':
         
-        task_name = request.args.get('task_name', '')
-        project = request.args.get('project', '')
-        assignee = request.args.get('assignee', '')
-        due_date = request.args.get('due_date', '')
-        status = request.args.get('status', '')
-        task_description = request.args.get('task_description', '')
-    
+        task_details = request.form
+        
+        task_name = task_details['task_name']
+        project = task_details['project']
+        assignee = task_details['assignee']
+        due_date = task_details['due_date']
+        status = task_details['status']
+        task_description = task_details['task_description']
+        
         cur = mysql.connection.cursor()
         cur.execute ("INSERT INTO `task`(`Task_Name`, `Task_description`, `Due_Date`, `Status`, `Project_Name`, `Assignee`) VALUES (%s, %s, %s, %s, %s, %s)",(task_name, task_description, due_date, status, project, assignee  ))
         mysql.connection.commit()
@@ -125,8 +127,8 @@ def tasks():
         cur.close()
 
         return redirect(url_for('main'))
-
-    return render_template('task.html', form=form)
+    else:
+        return render_template('task.html', form=form)
 
 @app.route('/project', methods= ['GET','POST'])
 def project():

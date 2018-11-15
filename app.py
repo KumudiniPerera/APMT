@@ -30,8 +30,8 @@ def signup():
     
     form = SignupForm(request.form)
     
-    if form.validate_on_submit():
-    #if request.method  == 'GET':
+    #if form.validate_on_submit():
+    if request.method  == 'POST':
         #Fetch data
         userDetails = request.form
 
@@ -124,7 +124,7 @@ def tasks():
 
         cur.close()
 
-        redirect(url_for('main'))
+        return redirect(url_for('main'))
 
     return render_template('task.html', form=form)
 
@@ -135,12 +135,14 @@ def project():
 
     if request.method == 'GET':
         
+        #and form.validate_on_submit():
+        
         projectName = request.args.get('projectName', '')
         clientName = request.args.get('clientName', '')
         technology = request.args.get('technology', '')
    
         cur = mysql.connection.cursor()
-        cur.execute ("INSERT INTO `project`(`Project_Name`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(projectName ,clientName, technology ))
+        cur.execute ("INSERT INTO `project`(`Project`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(projectName ,clientName, technology ))
         mysql.connection.commit()
 
         cur.close()

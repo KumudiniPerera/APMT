@@ -3,8 +3,6 @@ from flask_mysqldb import MySQL, MySQLdb
 
 import bcrypt
 
-from user import User
-
 from forms import SignupForm, LoginForm, TaskForm, ProjectForm
 
 import yaml
@@ -19,7 +17,6 @@ app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DB'] = db['mysql_db']
 app.config['MYSQL_HOST'] = db['mysql_host']
-app.config['SECRET_KEY'] = 'any secret string'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
@@ -33,7 +30,8 @@ def signup():
     
     form = SignupForm(request.form)
     
-    if (form.validate_on_submit()):  
+    #if form.validate_on_submit():
+    if request.method  == 'POST':
         #Fetch data
         userDetails = request.form
 
@@ -42,14 +40,9 @@ def signup():
         password = userDetails['password'].encode('utf-8')
         hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
         
-        #username = form.username.data
-        #email = form.email.data
-        #password = (form.password.data).encode('utf-8')
-        #hash_password = (bcrypt.hashpw(password, bcrypt.gensalt()))
-        
         cur = mysql.connection.cursor()
         cur.execute("SELECT `UserId` FROM `user`")
-        maxid = cur.fetchone()
+        #maxid = cur.fetchone()
         cur.execute ("INSERT INTO `user`(`UserName`, `Email`, `Password`) VALUES (%s, %s, %s)",(username ,email, hash_password ))
         mysql.connection.commit()
 
@@ -70,12 +63,12 @@ def login():
 
     if request.method == 'POST':
 
-        #userDetails1 = request.form
+        userDetails1 = request.form
 
-        email = form.email.data
-        password = (form.password.data).encode('utf-8')
-        #userDetails1['email']
-        #password = userDetails1['pass'].encode('utf-8')
+        #email = form.email.data
+        #password = (form.password.data).encode('utf-8')
+        email =userDetails1['email']
+        password = userDetails1['pass'].encode('utf-8')
 
         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cur.execute ("SELECT * FROM `user` WHERE Email= %s",(email,))
@@ -106,39 +99,55 @@ def tableList():
     resultValue = cur.execute ("SELECT `userId`, `UserName`, `email` FROM `user`")
     if resultValue > 0:
         userDetails = cur.fetchall()
-        print(userDetails)
-    return render_template('tables.html' , userDetails=userDetails)
+        return render_template('tables.html' , userDetails=userDetails)
 
 @app.route('/notifications')
 def notifications():
     return render_template('notifications.html')
 
-@app.route('/task')
+@app.route('/task', methods= ['GET','POST'])
 def tasks():
     form =TaskForm()
+    
+    if request.method == 'GET':
+        
+        task_name = request.args.get('task_name', '')
+        project = request.args.get('project', '')
+        assignee = request.args.get('assignee', '')
+        due_date = request.args.get('due_date', '')
+        status = request.args.get('status', '')
+        task_description = request.args.get('task_description', '')
+    
+        cur = mysql.connection.cursor()
+        cur.execute ("INSERT INTO `task`(`Task_Name`, `Task_description`, `Due_Date`, `Status`, `Project_Name`, `Assignee`) VALUES (%s, %s, %s, %s, %s, %s)",(task_name, task_description, due_date, status, project, assignee  ))
+        mysql.connection.commit()
+
+        cur.close()
+
+        return redirect(url_for('main'))
+
     return render_template('task.html', form=form)
 
 @app.route('/project', methods= ['GET','POST'])
 def project():
 
-    form =ProjectForm(request.form)
+    form =ProjectForm()
 
-    if form.validate_on_submit():  
+    if request.method == 'GET':
         
-        projectDetails = request.form
-
-        project_name = (projectDetails['project_name'])
-        client_name = (projectDetails['client_name'])
-        technology = (projectDetails['technology'])
-    
-        print(project_name)
+        #and form.validate_on_submit():
+        
+        projectName = request.args.get('projectName', '')
+        clientName = request.args.get('clientName', '')
+        technology = request.args.get('technology', '')
+   
         cur = mysql.connection.cursor()
-        cur.execute ("INSERT INTO `project`(`Project_Name`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(project_name ,client_name, technology ))
+        cur.execute ("INSERT INTO `project`(`Project`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(projectName ,clientName, technology ))
         mysql.connection.commit()
 
         cur.close()
 
-        return redirect(url_for('project' ))
+        return redirect(url_for('main'))
 
     return render_template('project.html', form=form)
 

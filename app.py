@@ -135,13 +135,13 @@ def project():
 
     form =ProjectForm()
 
-    if request.method == 'GET':
+    if request.method == 'POST':
         
-        #and form.validate_on_submit():
+        task_details = request.form
         
-        projectName = request.args.get('projectName', '')
-        clientName = request.args.get('clientName', '')
-        technology = request.args.get('technology', '')
+        projectName = task_details['projectName']
+        clientName = task_details['clientName']
+        technology = task_details['technology']
    
         cur = mysql.connection.cursor()
         cur.execute ("INSERT INTO `project`(`Project`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(projectName ,clientName, technology ))

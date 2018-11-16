@@ -30,7 +30,6 @@ def signup():
 
     form = SignupForm(request.form)
     
-    #if form.validate_on_submit():
     if request.method  == 'POST':
         #Fetch data
         userDetails = request.form
@@ -51,7 +50,8 @@ def signup():
 
         cur.close()
 
-        return redirect(url_for('main' )) 
+        return redirect(url_for('main'))
+        
     else:
         #use the below function to see the errors in validation
         print(form.errors)
@@ -64,9 +64,7 @@ def login():
     if request.method == 'POST':
 
         userDetails1 = request.form
-
-        #email = form.email.data
-        #password = (form.password.data).encode('utf-8')
+        
         email =userDetails1['email']
         password = userDetails1['pass'].encode('utf-8')
 

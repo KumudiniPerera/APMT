@@ -6,7 +6,7 @@ import yaml
 import sys
 
 from forms import SignupForm, LoginForm, TaskForm, ProjectForm
-from tables import Task
+from tables import User
 
 app = Flask(__name__)
 
@@ -93,12 +93,13 @@ def user():
 def tableList():
 
     cur = mysql.connection.cursor()
-    resultValue = cur.execute ("SELECT `userId`, `UserName`, `email` FROM `user` ")
+    resultValue = cur.execute (" SELECT `userId`, `userName`, `Email` FROM `user` ")
     
     if resultValue > 0:
         userDetails = cur.fetchall()
-
-    return render_template('tables.html' , userDetails=userDetails)
+        table = User(userDetails)
+        
+    return render_template('tables.html' , table= table)
 
 @app.route('/notifications')
 def notifications():
@@ -156,6 +157,38 @@ def project():
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+@app.route('/delete/')
+def delete_user(userId):
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM `user` WHERE `userId`=%s", (userId,))
+        mysql.connection.commit()
+
+        #flash('User deleted successfully!')
+        return redirect('/table-list')
+        
+    except Exception as e:
+        print(e)
+
+    finally:
+        cur.close() 
+
+@app.route('/edit/')
+def edit_view(id):
+    try:
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur.execute("SELECT * FROM tbl_user WHERE user_id=%s", id)
+        row = cur.fetchone()
+        
+        if row:
+            return render_template('edit.html', row=row)
+
+        else:
+            return 'Error loading #{id}'.format(id=id)
+               
+    finally:
+        cur.close()
 
 if __name__ == "__main__":
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'

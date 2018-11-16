@@ -30,7 +30,7 @@ def signup():
 
     form = SignupForm(request.form)
     
-    if request.method  == 'POST':
+    if request.method  == 'POST'and form.validate():
         #Fetch data
         userDetails = request.form
 
@@ -63,10 +63,10 @@ def login():
 
     if request.method == 'POST':
 
-        userDetails1 = request.form
-        
-        email =userDetails1['email']
-        password = userDetails1['pass'].encode('utf-8')
+        loginDetails = request.form
+
+        email =loginDetails['email']
+        password = loginDetails['password'].encode('utf-8')
 
         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cur.execute ("SELECT * FROM `user` WHERE Email= %s",(email,))
@@ -93,8 +93,10 @@ def user():
 
 @app.route('/table-list')
 def tableList():
+    
     cur = mysql.connection.cursor()
-    resultValue = cur.execute ("SELECT `userId`, `UserName`, `email` FROM `user`")
+    resultValue = cur.execute ("SELECT `userId`, `UserName`, `email` FROM `user` ")
+    
     if resultValue > 0:
         userDetails = cur.fetchall()
         return render_template('tables.html' , userDetails=userDetails)
@@ -135,11 +137,11 @@ def project():
 
     if request.method == 'POST':
         
-        task_details = request.form
+        project_details = request.form
         
-        projectName = task_details['projectName']
-        clientName = task_details['clientName']
-        technology = task_details['technology']
+        projectName = project_details['projectName']
+        clientName = project_details['clientName']
+        technology = project_details['technology']
    
         cur = mysql.connection.cursor()
         cur.execute ("INSERT INTO `project`(`Project`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(projectName ,clientName, technology ))
@@ -150,6 +152,7 @@ def project():
         return redirect(url_for('main'))
 
     return render_template('project.html', form=form)
+
 
 if __name__ == "__main__":
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'

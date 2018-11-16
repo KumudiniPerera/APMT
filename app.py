@@ -2,12 +2,11 @@ from flask import Flask, render_template,request, redirect, url_for, session
 from flask_mysqldb import MySQL, MySQLdb
 
 import bcrypt
+import yaml
+import sys
 
 from forms import SignupForm, LoginForm, TaskForm, ProjectForm
-
-import yaml
-
-import sys
+from tables import Task
 
 app = Flask(__name__)
 
@@ -41,7 +40,6 @@ def signup():
         
         cur = mysql.connection.cursor()
         cur.execute("SELECT `UserId` FROM `user`")
-        #maxid = cur.fetchone()
         cur.execute ("INSERT INTO `user`(`UserName`, `Email`, `Password`) VALUES (%s, %s, %s)",(username ,email, hash_password ))
         mysql.connection.commit()
 
@@ -93,13 +91,14 @@ def user():
 
 @app.route('/table-list')
 def tableList():
-    
+
     cur = mysql.connection.cursor()
     resultValue = cur.execute ("SELECT `userId`, `UserName`, `email` FROM `user` ")
     
     if resultValue > 0:
         userDetails = cur.fetchall()
-        return render_template('tables.html' , userDetails=userDetails)
+
+    return render_template('tables.html' , userDetails=userDetails)
 
 @app.route('/notifications')
 def notifications():
@@ -153,6 +152,10 @@ def project():
 
     return render_template('project.html', form=form)
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 if __name__ == "__main__":
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'

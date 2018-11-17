@@ -2,8 +2,8 @@ from flask import Flask, render_template,request, redirect, url_for, session
 from flask_mysqldb import MySQL, MySQLdb
 
 import bcrypt
-import yaml
 import sys
+import yaml
 
 from forms import SignupForm, LoginForm, TaskForm, ProjectForm
 from tables import User

@@ -158,7 +158,8 @@
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
-                   <table class="table">
+                    {{table}}
+            <!--      <table class="table">
                       <thead class="">
                         <th>
                           ID
@@ -170,21 +171,19 @@
                           Email
                         </th>
                       </thead>
-                        {% for user in userDetails %}
-                        <tr>
+                      <tr>
                           <td>
-                            {{user[0]}}
+                            {{ userId }}
                           </td>
                           <td>
-                            {{user[1]}}
+                            {{ userName }}
                           </td>
                           <td>
-                            {{user[2]}}
+                            {{ Email }}
                           </td>
-                        </tr>
-                          {% endfor %}
+                        </tr> 
                       </tbody>
-                    </table>
+                    </table> -->
                   </div>
                 </div>
               </div>

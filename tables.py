@@ -1,11 +1,12 @@
-from flask_table import Table, Col
+from flask_table import Table, Col, LinkCol
  
-class Task(Table):
-    id = Col('Id', show=False)
-    task = Col('task_name')
-    assignee = Col('assignee')
-    project = Col('project')
-    due_date = Col('due_date')
-    status = Col('status')
-    task_description = Col('task_description')
+class User(Table):
+    userId = Col('ID', show=True)
+    userName = Col('Name')
+    Email = Col('Email')
+    delete = LinkCol('Delete', 'delete_user', url_kwargs=dict(userId='userId'))
+    edit = LinkCol('Edit', 'edit_view', url_kwargs=dict(id='userId'))
+    
+
+
     

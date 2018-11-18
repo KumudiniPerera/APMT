@@ -1,16 +1,17 @@
-from flask import Flask, render_template,request, redirect, url_for, session
+from flask import Flask, render_template,request, redirect, url_for, session, flash
 from flask_mysqldb import MySQL, MySQLdb
 
 import bcrypt
 import sys
 import yaml
 
+from user import User
 from forms import SignupForm, LoginForm, TaskForm, ProjectForm
-from tables import User
 
 app = Flask(__name__)
 
-#Configure DB
+# ------------------------------ Configure DB ------------------------------------------------ #
+
 db = yaml.load (open('db.yaml'))
 app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
@@ -20,9 +21,13 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
 
+# ------------------------------ Dashboard ---------------------------------------------------- #
+
 @app.route('/index')
 def main():
     return render_template('dashboard.html')
+
+# ------------------------------ Signup ---------------------------------------------------- #
 
 @app.route('/signup', methods= ['GET','POST'])
 def signup():
@@ -54,7 +59,9 @@ def signup():
         #use the below function to see the errors in validation
         print(form.errors)
         return render_template('signup.html' , form = form )
-        
+
+# ------------------------------ Login ---------------------------------------------------- #   
+
 @app.route('/', methods= ['GET','POST'])
 def login():
     form = LoginForm()
@@ -85,25 +92,70 @@ def login():
     else:
         return render_template('login.html', form = form)
 
+# ------------------------------ Logout ---------------------------------------------------- #
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+# ------------------------------ User Profile ---------------------------------------------------- #
+
 @app.route('/user')
 def user():
     return render_template('user.html')
+
+# ------------------------------ Table- user ---------------------------------------------------- #
 
 @app.route('/table-list')
 def tableList():
 
     cur = mysql.connection.cursor()
-    resultValue = cur.execute (" SELECT `userId`, `userName`, `Email` FROM `user` ")
+    cur.execute (" SELECT * FROM `user` ")   
+    userDetails = cur.fetchall()
+    cur.close()
     
-    if resultValue > 0:
-        userDetails = cur.fetchall()
-        table = User(userDetails)
-        
-    return render_template('tables.html' , table= table)
+    return render_template('tables.html' , userDetails = userDetails)
 
-@app.route('/notifications')
-def notifications():
-    return render_template('notifications.html')
+# ------------------------------ Delete user ---------------------------------------------------- #  
+
+@app.route('/delete-user/')
+def delete_user(userId):
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM `user` WHERE `userId`=%s", (userId,))
+        mysql.connection.commit()
+
+        flash('User deleted successfully!')
+        return redirect('/table-list')
+        
+    except Exception as e:
+        print(e)
+
+    finally:
+        cur.close() 
+
+# ------------------------------ Update- user ---------------------------------------------------- #
+
+@app.route('/edit-user/')
+def edit_user(id):
+    try:
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur.execute("SELECT * FROM user WHERE userId=%s", id)
+        row = cur.fetchone()
+
+        print(row)
+        
+        if row:
+            return render_template('user.html', row=row)
+
+        else:
+            return 'Error loading #{id}'.format(id=id)
+               
+    finally:
+        cur.close()
+
+# ------------------------------ Add Tasks ---------------------------------------------------- #
 
 @app.route('/task', methods= ['GET','POST'])
 def tasks():
@@ -130,6 +182,8 @@ def tasks():
     else:
         return render_template('task.html', form=form)
 
+# ------------------------------ Add Projects ---------------------------------------------------- #
+
 @app.route('/project', methods= ['GET','POST'])
 def project():
 
@@ -153,42 +207,13 @@ def project():
 
     return render_template('project.html', form=form)
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('login'))
+# ------------------------------ Notifications ---------------------------------------------------- #
 
-@app.route('/delete/')
-def delete_user(userId):
-    try:
-        cur = mysql.connection.cursor()
-        cur.execute("DELETE FROM `user` WHERE `userId`=%s", (userId,))
-        mysql.connection.commit()
+@app.route('/notifications')
+def notifications():
+    return render_template('notifications.html')
 
-        #flash('User deleted successfully!')
-        return redirect('/table-list')
-        
-    except Exception as e:
-        print(e)
-
-    finally:
-        cur.close() 
-
-@app.route('/edit/')
-def edit_view(id):
-    try:
-        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cur.execute("SELECT * FROM tbl_user WHERE user_id=%s", id)
-        row = cur.fetchone()
-        
-        if row:
-            return render_template('edit.html', row=row)
-
-        else:
-            return 'Error loading #{id}'.format(id=id)
-               
-    finally:
-        cur.close()
+# ------------------------------ Main ---------------------------------------------------- #
 
 if __name__ == "__main__":
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'

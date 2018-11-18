@@ -158,8 +158,7 @@
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
-                    {{table}}
-            <!--      <table class="table">
+                    <table class="table">
                       <thead class="">
                         <th>
                           ID
@@ -171,19 +170,27 @@
                           Email
                         </th>
                       </thead>
+                      {% for user in userDetails %}
                       <tr>
                           <td>
-                            {{ userId }}
+                            {{user[0]}}  
                           </td>
                           <td>
-                            {{ userName }}
                           </td>
                           <td>
-                            {{ Email }}
+                          </td>
+                          <td class="td-actions text-right">
+                              <button onclick="location.href='/edit-user/'" type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button onclick="location.href='/delete-user/'"type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-link btn-sm">
+                                <i class="material-icons">close</i>
+                              </button>
                           </td>
                         </tr> 
+                        {% endfor %}                        
                       </tbody>
-                    </table> -->
+                    </table>
                   </div>
                 </div>
               </div>

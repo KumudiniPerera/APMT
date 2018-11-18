@@ -10,5 +10,9 @@
   
   Install Flask Bcrypt : "pip install Flask-Bcrypt"
 
+  install pyyaml : "pip install pyyaml"
+
+  install WTForms : "pip install Flask-WTF"
+
  Run : 
   Python app.py

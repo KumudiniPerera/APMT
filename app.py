@@ -1,5 +1,6 @@
 from flask import Flask, render_template,request, redirect, url_for, session, flash
 from flask_mysqldb import MySQL, MySQLdb
+from flask_datepicker import datepicker
 
 import bcrypt
 import sys
@@ -20,6 +21,7 @@ app.config['MYSQL_HOST'] = db['mysql_host']
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
+datepicker(app)
 
 # ------------------------------ Dashboard ---------------------------------------------------- #
 
@@ -117,7 +119,15 @@ def tableList():
         userDetails = cur.fetchall()
         cur.close()
 
-        return render_template('tables.html' , userDetails = userDetails)
+    cur = mysql.connection.cursor()
+    resultvalue1 = cur.execute (" SELECT * FROM `project` ")   
+
+    if resultvalue1>0:
+        projectDetails = cur.fetchall()
+        cur.close()
+
+
+        return render_template('tables.html' , userDetails = userDetails, projectDetails= projectDetails)
 
 # ------------------------------ Delete user ---------------------------------------------------- #  
 
@@ -218,6 +228,23 @@ def project():
 
     return render_template('project.html', form=form)
 
+# ------------------------------ Delete Projecr ---------------------------------------------------- #  
+
+@app.route('/delete-project/<string:id>')
+def delete_project(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM `project` WHERE `Project_ID`=%s", (id,))
+        mysql.connection.commit()
+
+        flash('User deleted successfully!')
+        return redirect('/table-list')
+        
+    except Exception as e:
+        print(e)
+
+    finally:
+        cur.close() 
 # ------------------------------ Notifications ---------------------------------------------------- #
 
 @app.route('/notifications')

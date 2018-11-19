@@ -111,19 +111,21 @@ def user():
 def tableList():
 
     cur = mysql.connection.cursor()
-    cur.execute (" SELECT * FROM `user` ")   
-    userDetails = cur.fetchall()
-    cur.close()
-    
-    return render_template('tables.html' , userDetails = userDetails)
+    resultvalue = cur.execute (" SELECT * FROM `user` ")   
+
+    if resultvalue>0:
+        userDetails = cur.fetchall()
+        cur.close()
+
+        return render_template('tables.html' , userDetails = userDetails)
 
 # ------------------------------ Delete user ---------------------------------------------------- #  
 
-@app.route('/delete-user/')
-def delete_user(userId):
+@app.route('/delete-user/<string:id>')
+def delete_user(id):
     try:
         cur = mysql.connection.cursor()
-        cur.execute("DELETE FROM `user` WHERE `userId`=%s", (userId,))
+        cur.execute("DELETE FROM `user` WHERE `userId`=%s", (id,))
         mysql.connection.commit()
 
         flash('User deleted successfully!')
@@ -137,24 +139,33 @@ def delete_user(userId):
 
 # ------------------------------ Update- user ---------------------------------------------------- #
 
-@app.route('/edit-user/')
+@app.route('/edit-user/', methods= ['GET','POST'])
 def edit_user(id):
-    try:
-        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cur.execute("SELECT * FROM user WHERE userId=%s", id)
-        row = cur.fetchone()
-
-        print(row)
+    
+    if request.method == 'POST':
         
-        if row:
-            return render_template('user.html', row=row)
+        user_details = request.form
 
-        else:
-            return 'Error loading #{id}'.format(id=id)
-               
-    finally:
-        cur.close()
+        userid = user_details['id']
+        print(userid)
+        username = user_details['username']
+        print(username)
+        email = user_details['email']
+        print(email)
 
+        cur = mysql.connection.cursor()
+        cur.execute("""
+               UPDATE user
+               SET name=%s, email=%s
+               WHERE userId=%s
+            """, (username, email, userid) )
+
+        flash("Data Updated Successfully")
+
+        cur.commit()
+        
+        return redirect (url_for('tableList'))
+                      
 # ------------------------------ Add Tasks ---------------------------------------------------- #
 
 @app.route('/task', methods= ['GET','POST'])

@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
+from datetime import date
 
 class SignupForm(FlaskForm):
     username = StringField('User Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Your Name"})

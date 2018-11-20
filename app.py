@@ -46,7 +46,6 @@ def signup():
         hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
         
         cur = mysql.connection.cursor()
-        cur.execute("SELECT `UserId` FROM `user`")
         cur.execute ("INSERT INTO `user`(`UserName`, `Email`, `Password`) VALUES (%s, %s, %s)",(username ,email, hash_password ))
         mysql.connection.commit()
 
@@ -126,8 +125,14 @@ def tableList():
         projectDetails = cur.fetchall()
         cur.close()
 
+    cur = mysql.connection.cursor()
+    resultvalue2 = cur.execute (" SELECT * FROM `task` ")   
 
-        return render_template('tables.html' , userDetails = userDetails, projectDetails= projectDetails)
+    if resultvalue2>0:
+        taskDetails = cur.fetchall()
+        cur.close()
+
+        return render_template('tables.html' , userDetails = userDetails, projectDetails= projectDetails, taskDetails=taskDetails)
 
 # ------------------------------ Delete user ---------------------------------------------------- #  
 
@@ -150,18 +155,17 @@ def delete_user(id):
 # ------------------------------ Update user ---------------------------------------------------- #
 
 @app.route('/edit-user/', methods= ['GET','POST'])
-def edit_user(id):
+def edit_user():
     
+    print("that")
     if request.method == 'POST':
+        print("that")
         
         user_details = request.form
 
         userid = user_details['id']
-        print(userid)
         username = user_details['username']
-        print(username)
         email = user_details['email']
-        print(email)
 
         cur = mysql.connection.cursor()
         cur.execute("""
@@ -171,11 +175,11 @@ def edit_user(id):
             """, (username, email, userid) )
 
         flash("Data Updated Successfully")
-
-        cur.commit()
+        mysql.connection.commit()
+        cur.close()
         
         return redirect (url_for('tableList'))
-                      
+                 
 # ------------------------------ Add Tasks ---------------------------------------------------- #
 
 @app.route('/task', methods= ['GET','POST'])
@@ -203,6 +207,55 @@ def tasks():
     else:
         return render_template('task.html', form=form)
 
+# ------------------------------ Delete Task ---------------------------------------------------- #  
+
+@app.route('/delete-task/<string:id>')
+def delete_task(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM `task` WHERE `Task_ID`=%s", (id,))
+        mysql.connection.commit()
+
+        flash('User deleted successfully!')
+        return redirect('/table-list')
+        
+    except Exception as e:
+        print(e)
+
+    finally:
+        cur.close() 
+
+# ------------------------------ Update Task---------------------------------------------------- #
+
+@app.route('/edit-task/', methods= ['GET','POST'])
+def edit_task():
+    
+    if request.method == 'POST':
+        
+        task_details = request.form
+
+        taskid = task_details['id']
+        task = task_details['task']
+        project = task_details['project']
+        assignee = task_details['assignee']
+        due_date = task_details['due_date']
+        status = task_details['status']
+        description = task_details['description']
+
+        cur = mysql.connection.cursor()
+        cur.execute("""
+               UPDATE `task` SET 
+              `Task_Name`=%s,`Task_description`=%s,`Due_Date`=%s,`Status`=%s,`Project_Name`=%s,`Assignee`= %s
+               WHERE `Task_ID`=%s
+            """, (task, description, due_date, status, project, assignee, taskid) )
+
+        flash("Data Updated Successfully")
+        mysql.connection.commit()
+        cur.close()
+        
+        return redirect (url_for('tableList'))
+
+
 # ------------------------------ Add Projects ---------------------------------------------------- #
 
 @app.route('/project', methods= ['GET','POST'])
@@ -224,11 +277,11 @@ def project():
 
         cur.close()
 
-        return redirect(url_for('main'))
+        return redirect(url_for('tableList'))
 
     return render_template('project.html', form=form)
 
-# ------------------------------ Delete Projecr ---------------------------------------------------- #  
+# ------------------------------ Delete Project ---------------------------------------------------- #  
 
 @app.route('/delete-project/<string:id>')
 def delete_project(id):
@@ -245,6 +298,35 @@ def delete_project(id):
 
     finally:
         cur.close() 
+
+# ------------------------------ Update Project ---------------------------------------------------- #
+
+@app.route('/edit-project/', methods= ['GET','POST'])
+def edit_project():
+    
+    if request.method == 'POST':
+        
+        project_details = request.form
+
+        projectid = project_details['id']
+        project = project_details['project']
+        client  = project_details['client']
+        technology  = project_details['technology']
+
+        cur = mysql.connection.cursor()
+        cur.execute("""
+               UPDATE `project` SET 
+               `Project`=%s,`Client_Name`=%s,`Technology`=%s 
+               WHERE Project_ID=%s
+            """, (project, client, technology, projectid) )
+
+        flash("Data Updated Successfully")
+        mysql.connection.commit()
+        cur.close()
+        
+        return redirect (url_for('tableList'))
+
+
 # ------------------------------ Notifications ---------------------------------------------------- #
 
 @app.route('/notifications')

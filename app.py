@@ -166,7 +166,7 @@ def edit_user(id):
         cur = mysql.connection.cursor()
         cur.execute("""
                UPDATE user
-               SET name=%s, email=%s
+               SET userName=%s, Email=%s
                WHERE userId=%s
             """, (username, email, userid) )
 

@@ -1,15 +1,25 @@
 from flask import Flask, render_template,request, redirect, url_for, session, flash
+
+#Mysql DB 
 from flask_mysqldb import MySQL, MySQLdb
+
+#Datepicker 
 from flask_datepicker import datepicker
+
+#Email  
+from flask_mail import Mail,Message
 
 import bcrypt
 import sys
 import yaml
 
 from user import User
+
+#Forms
 from forms import SignupForm, LoginForm, TaskForm, ProjectForm
 
 app = Flask(__name__)
+mail = Mail(app)
 
 # ------------------------------ Configure DB ------------------------------------------------ #
 
@@ -22,6 +32,16 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
 datepicker(app)
+
+# ------------------------------ Configure Mail ------------------------------------------------ #
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'dinlanka123@gmail.com'
+app.config['MAIL_PASSWORD'] = 'dinlanka@123'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
 
 # ------------------------------ Dashboard ---------------------------------------------------- #
 
@@ -332,6 +352,17 @@ def edit_project():
 @app.route('/notifications')
 def notifications():
     return render_template('notifications.html')
+
+# ----------------------------- Mail ----------------------------------------------------- #
+
+@app.route("/mail")
+def email():
+
+    msg = Message('Hello', sender = 'yourId@gmail.com', recipients = ['id1@gmail.com'])
+    msg.body = "This is the email body"
+    mail.send(msg)
+    
+    return "Sent"
 
 # ------------------------------ Main ---------------------------------------------------- #
 

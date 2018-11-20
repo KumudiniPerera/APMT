@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
+from datetime import date
 
 class SignupForm(FlaskForm):
     username = StringField('User Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Your Name"})
@@ -19,7 +20,7 @@ class TaskForm(FlaskForm):
     task_name = StringField('User Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Task Name"})
     assignee = StringField('Assignee Name', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Assignee Name"})
     project = StringField('Project', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Project Name"})
-    due_date = DateField('Due Date' ,render_kw={"placeholder": "YYYY-MM-DD"})
+    due_date = DateField('Due Date' ,format="%m/%d/%Y")
     status = SelectField(u'Status', choices=[('-- --','-- --' ), ('In Progress','In Progress' ), ('Completed', 'Completed'), ('Hold', 'Hold')])
     task_description = TextAreaField('Task Description' , validators= [DataRequired(), Length(max =200)], render_kw={"placeholder": "Task Description"})
 

@@ -1,17 +1,18 @@
-from flask import Flask, render_template,request, redirect, url_for, session
+from flask import Flask, render_template,request, redirect, url_for, session, flash
 from flask_mysqldb import MySQL, MySQLdb
+from flask_datepicker import datepicker
 
 import bcrypt
-
-from forms import SignupForm, LoginForm, TaskForm, ProjectForm
-
+import sys
 import yaml
 
-import sys
+from user import User
+from forms import SignupForm, LoginForm, TaskForm, ProjectForm
 
 app = Flask(__name__)
 
-#Configure DB
+# ------------------------------ Configure DB ------------------------------------------------ #
+
 db = yaml.load (open('db.yaml'))
 app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
@@ -20,18 +21,22 @@ app.config['MYSQL_HOST'] = db['mysql_host']
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
+datepicker(app)
+
+# ------------------------------ Dashboard ---------------------------------------------------- #
 
 @app.route('/index')
 def main():
     return render_template('dashboard.html')
+
+# ------------------------------ Signup ---------------------------------------------------- #
 
 @app.route('/signup', methods= ['GET','POST'])
 def signup():
 
     form = SignupForm(request.form)
     
-    #if form.validate_on_submit():
-    if request.method  == 'POST':
+    if request.method  == 'POST'and form.validate():
         #Fetch data
         userDetails = request.form
 
@@ -42,7 +47,6 @@ def signup():
         
         cur = mysql.connection.cursor()
         cur.execute("SELECT `UserId` FROM `user`")
-        #maxid = cur.fetchone()
         cur.execute ("INSERT INTO `user`(`UserName`, `Email`, `Password`) VALUES (%s, %s, %s)",(username ,email, hash_password ))
         mysql.connection.commit()
 
@@ -51,24 +55,25 @@ def signup():
 
         cur.close()
 
-        return redirect(url_for('main' )) 
+        return redirect(url_for('main'))
+        
     else:
         #use the below function to see the errors in validation
         print(form.errors)
         return render_template('signup.html' , form = form )
-        
+
+# ------------------------------ Login ---------------------------------------------------- #   
+
 @app.route('/', methods= ['GET','POST'])
 def login():
     form = LoginForm()
 
     if request.method == 'POST':
 
-        userDetails1 = request.form
+        loginDetails = request.form
 
-        #email = form.email.data
-        #password = (form.password.data).encode('utf-8')
-        email =userDetails1['email']
-        password = userDetails1['pass'].encode('utf-8')
+        email =loginDetails['email']
+        password = loginDetails['password'].encode('utf-8')
 
         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cur.execute ("SELECT * FROM `user` WHERE Email= %s",(email,))
@@ -89,21 +94,89 @@ def login():
     else:
         return render_template('login.html', form = form)
 
+# ------------------------------ Logout ---------------------------------------------------- #
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+# ------------------------------ User Profile ---------------------------------------------------- #
+
 @app.route('/user')
 def user():
     return render_template('user.html')
 
+# ------------------------------ Table- user ---------------------------------------------------- #
+
 @app.route('/table-list')
 def tableList():
-    cur = mysql.connection.cursor()
-    resultValue = cur.execute ("SELECT `userId`, `UserName`, `email` FROM `user`")
-    if resultValue > 0:
-        userDetails = cur.fetchall()
-        return render_template('tables.html' , userDetails=userDetails)
 
-@app.route('/notifications')
-def notifications():
-    return render_template('notifications.html')
+    cur = mysql.connection.cursor()
+    resultvalue = cur.execute (" SELECT * FROM `user` ")   
+
+    if resultvalue>0:
+        userDetails = cur.fetchall()
+        cur.close()
+
+    cur = mysql.connection.cursor()
+    resultvalue1 = cur.execute (" SELECT * FROM `project` ")   
+
+    if resultvalue1>0:
+        projectDetails = cur.fetchall()
+        cur.close()
+
+
+        return render_template('tables.html' , userDetails = userDetails, projectDetails= projectDetails)
+
+# ------------------------------ Delete user ---------------------------------------------------- #  
+
+@app.route('/delete-user/<string:id>')
+def delete_user(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM `user` WHERE `userId`=%s", (id,))
+        mysql.connection.commit()
+
+        flash('User deleted successfully!')
+        return redirect('/table-list')
+        
+    except Exception as e:
+        print(e)
+
+    finally:
+        cur.close() 
+
+# ------------------------------ Update user ---------------------------------------------------- #
+
+@app.route('/edit-user/', methods= ['GET','POST'])
+def edit_user(id):
+    
+    if request.method == 'POST':
+        
+        user_details = request.form
+
+        userid = user_details['id']
+        print(userid)
+        username = user_details['username']
+        print(username)
+        email = user_details['email']
+        print(email)
+
+        cur = mysql.connection.cursor()
+        cur.execute("""
+               UPDATE user
+               SET name=%s, email=%s
+               WHERE userId=%s
+            """, (username, email, userid) )
+
+        flash("Data Updated Successfully")
+
+        cur.commit()
+        
+        return redirect (url_for('tableList'))
+                      
+# ------------------------------ Add Tasks ---------------------------------------------------- #
 
 @app.route('/task', methods= ['GET','POST'])
 def tasks():
@@ -130,18 +203,20 @@ def tasks():
     else:
         return render_template('task.html', form=form)
 
+# ------------------------------ Add Projects ---------------------------------------------------- #
+
 @app.route('/project', methods= ['GET','POST'])
 def project():
 
     form =ProjectForm()
 
-    if request.method == 'GET':
+    if request.method == 'POST':
         
-        #and form.validate_on_submit():
+        project_details = request.form
         
-        projectName = request.args.get('projectName', '')
-        clientName = request.args.get('clientName', '')
-        technology = request.args.get('technology', '')
+        projectName = project_details['projectName']
+        clientName = project_details['clientName']
+        technology = project_details['technology']
    
         cur = mysql.connection.cursor()
         cur.execute ("INSERT INTO `project`(`Project`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(projectName ,clientName, technology ))
@@ -152,6 +227,31 @@ def project():
         return redirect(url_for('main'))
 
     return render_template('project.html', form=form)
+
+# ------------------------------ Delete Projecr ---------------------------------------------------- #  
+
+@app.route('/delete-project/<string:id>')
+def delete_project(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM `project` WHERE `Project_ID`=%s", (id,))
+        mysql.connection.commit()
+
+        flash('User deleted successfully!')
+        return redirect('/table-list')
+        
+    except Exception as e:
+        print(e)
+
+    finally:
+        cur.close() 
+# ------------------------------ Notifications ---------------------------------------------------- #
+
+@app.route('/notifications')
+def notifications():
+    return render_template('notifications.html')
+
+# ------------------------------ Main ---------------------------------------------------- #
 
 if __name__ == "__main__":
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'

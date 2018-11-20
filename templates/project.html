@@ -27,7 +27,9 @@
                     <h2>Add a Project</h2> 
                     <br>
 <!--                  <p> Send us your message and we will get back to you as soon as possible </p>> -->
-                    <form role="form" method="GET"  action="">
+                    <form role="form" method="POST" id="reused_form" action="">
+                            {{ form.hidden_tag() }}
+                            {{ form.csrf_token }} 
                         <div class="row">
                             <div class="col-sm-12 form-group">
                                 <label for="name"> Project Name:</label>

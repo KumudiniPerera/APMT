@@ -12,6 +12,7 @@ from flask_mail import Mail,Message
 import bcrypt
 import sys
 import yaml
+import smtplib
 
 from user import User
 
@@ -19,7 +20,6 @@ from user import User
 from forms import SignupForm, LoginForm, TaskForm, ProjectForm
 
 app = Flask(__name__)
-mail = Mail(app)
 
 # ------------------------------ Configure DB ------------------------------------------------ #
 
@@ -35,13 +35,18 @@ datepicker(app)
 
 # ------------------------------ Configure Mail ------------------------------------------------ #
 
-app.config['MAIL_SERVER']='smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'dinlanka123@gmail.com'
-app.config['MAIL_PASSWORD'] = 'dinlanka@123'
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+app.config.update(dict(
 
+    DEBUG = True,
+    MAIL_SERVER ='smtp.gmail.com',
+    MAIL_PORT = 465,
+    MAIL_USERNAME = 'dinlanka123@gmail.com',
+    MAIL_PASSWORD = 'dinlanka@123',
+    MAIL_USE_TLS = False,
+    MAIL_USE_SSL = True,
+    
+    ))
+mail = Mail(app)
 
 # ------------------------------ Dashboard ---------------------------------------------------- #
 
@@ -358,7 +363,7 @@ def notifications():
 @app.route("/mail")
 def email():
 
-    msg = Message('Hello', sender = 'yourId@gmail.com', recipients = ['id1@gmail.com'])
+    msg = Message('Hello', sender = 'dinlanka123@gmail.com', recipients = ['kumudiniaccura@gmail.com'])
     msg.body = "This is the email body"
     mail.send(msg)
     

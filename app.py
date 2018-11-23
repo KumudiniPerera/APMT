@@ -31,7 +31,6 @@ app.config['MYSQL_HOST'] = db['mysql_host']
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
-datepicker(app)
 
 # ------------------------------ Configure Mail ------------------------------------------------ #
 

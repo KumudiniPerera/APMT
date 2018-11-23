@@ -2,6 +2,7 @@
  
  A project management tool using Python Flask
  
+ ##################################################################################
  prerequisite:
    
   Install Flask : "pip install Flask"
@@ -14,5 +15,8 @@
 
   install WTForms : "pip install Flask-WTF"
 
+  Install flask-wysiwyg 0.1 : "pip install flask-wysiwyg"
+
+###################################################################################
  Run : 
   Python app.py

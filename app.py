@@ -3,8 +3,8 @@ from flask import Flask, render_template,request, redirect, url_for, session, fl
 #Mysql DB 
 from flask_mysqldb import MySQL, MySQLdb
 
-#Datepicker 
-from flask_datepicker import datepicker
+#Import WYSIWYG
+from flask_wysiwyg.wysiwyg import WysiwygField
 
 #Email  
 from flask_mail import Mail,Message
@@ -368,10 +368,10 @@ def search():
         search = request.form['search']
         cur = mysql.connection.cursor()
         result = cur.execute (" SELECT * FROM `task` WHERE `Task_Name` OR `Task_description` OR `Project_Name` OR `Assignee`= %s", (search))
-        result1 = cur.execute (" SELECT * FROM `user` WHERE `userName` OR `Email` = %s", (search))
-        result2 = cur.execute (" SELECT * FROM `project` WHERE `Project` oR `Project` OR `Technology` = %s", (search))
+        #result1 = cur.execute (" SELECT * FROM `user` WHERE `userName` OR `Email` = %s", (search))
+        #result2 = cur.execute (" SELECT * FROM `project` WHERE `Project` oR `Project` OR `Technology` = %s", (search))
 
-        if ((result>0) or (result1>0) or (result2>0)):
+        if result>0:
             searchresult = cur.fetchall()
             cur.close()
         

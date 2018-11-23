@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
-from datetime import date
+from flask_wysiwyg.wysiwyg import WysiwygField
 
 class SignupForm(FlaskForm):
     username = StringField('User Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Your Name"})
@@ -22,7 +22,7 @@ class TaskForm(FlaskForm):
     project = StringField('Project', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Project Name"})
     due_date = DateField('Due Date' ,format="%m/%d/%Y")
     status = SelectField(u'Status', choices=[('-- --','-- --' ), ('In Progress','In Progress' ), ('Completed', 'Completed'), ('Hold', 'Hold')])
-    task_description = TextAreaField('Task Description' , validators= [DataRequired(), Length(max =200)], render_kw={"placeholder": "Task Description"})
+    task_description = WysiwygField(u'Task Description' , validators= [DataRequired(), Length(max =200)], render_kw={"placeholder": "Task Description"})
 
 ######################################################################################################################################################################
 

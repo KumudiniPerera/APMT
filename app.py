@@ -44,7 +44,7 @@ app.config.update(dict(
     MAIL_PASSWORD = 'dinlanka@123',
     MAIL_USE_TLS = False,
     MAIL_USE_SSL = True,
-    
+
     ))
 mail = Mail(app)
 
@@ -351,13 +351,35 @@ def edit_project():
         
         return redirect (url_for('tableList'))
 
-
 # ------------------------------ Notifications ---------------------------------------------------- #
 
 @app.route('/notifications')
 def notifications():
     return render_template('notifications.html')
 
+# ------------------------------ Search ---------------------------------------------------- #
+
+@app.route("/search", methods=['GET', 'POST'])
+def search():
+
+    if request.method == 'POST':
+        print("2")
+
+        search = request.form['search']
+        cur = mysql.connection.cursor()
+        result = cur.execute (" SELECT * FROM `task` WHERE `Task_Name` OR `Task_description` OR `Project_Name` OR `Assignee`= %s", (search))
+        result1 = cur.execute (" SELECT * FROM `user` WHERE `userName` OR `Email` = %s", (search))
+        result2 = cur.execute (" SELECT * FROM `project` WHERE `Project` oR `Project` OR `Technology` = %s", (search))
+
+        if ((result>0) or (result1>0) or (result2>0)):
+            searchresult = cur.fetchall()
+            cur.close()
+        
+        else:
+            return "No Results Found"
+    
+    return render_template('search.html', searchresult = searchresult)
+        
 # ----------------------------- Mail ----------------------------------------------------- #
 
 @app.route("/mail")

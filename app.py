@@ -106,12 +106,15 @@ def login():
         if (user):
             
             if(bcrypt.hashpw(password,user['Password'].encode('utf-8'))== user['Password'].encode('utf-8')):
+                
                 return redirect(url_for('main'))
                 
             else:
+                flash('Invalid Email or Password !')
                 return redirect(url_for('login'))
 
         else:
+            flash('Invalid Email or Password !')
             return redirect(url_for('login'))     
 
     else:
@@ -122,6 +125,8 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
+
+    flash('User logout successfully!')
     return redirect(url_for('login'))
 
 # ------------------------------ User Profile ---------------------------------------------------- #
@@ -225,9 +230,10 @@ def tasks():
         cur.execute ("INSERT INTO `task`(`Task_Name`, `Task_description`, `Due_Date`, `Status`, `Project_Name`, `Assignee`) VALUES (%s, %s, %s, %s, %s, %s)",(task_name, task_description, due_date, status, project, assignee  ))
         mysql.connection.commit()
 
+        flash('Task added successfully!')
         cur.close()
 
-        return redirect(url_for('main'))
+        return redirect(url_for('tableList'))
     else:
         return render_template('task.html', form=form)
 
@@ -240,7 +246,7 @@ def delete_task(id):
         cur.execute("DELETE FROM `task` WHERE `Task_ID`=%s", (id,))
         mysql.connection.commit()
 
-        flash('User deleted successfully!')
+        flash('Task deleted successfully!')
         return redirect('/table-list')
         
     except Exception as e:
@@ -273,8 +279,9 @@ def edit_task():
                WHERE `Task_ID`=%s
             """, (task, description, due_date, status, project, assignee, taskid) )
 
-        flash("Data Updated Successfully")
         mysql.connection.commit()
+
+        flash("Data Updated Successfully")
         cur.close()
         
         return redirect (url_for('tableList'))
@@ -297,8 +304,8 @@ def project():
    
         cur = mysql.connection.cursor()
         cur.execute ("INSERT INTO `project`(`Project`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(projectName ,clientName, technology ))
+        flash('Project added successfully!')
         mysql.connection.commit()
-
         cur.close()
 
         return redirect(url_for('tableList'))
@@ -314,7 +321,7 @@ def delete_project(id):
         cur.execute("DELETE FROM `project` WHERE `Project_ID`=%s", (id,))
         mysql.connection.commit()
 
-        flash('User deleted successfully!')
+        flash('Project deleted successfully!')
         return redirect('/table-list')
         
     except Exception as e:
@@ -373,7 +380,7 @@ def search():
         if result>0:
             searchresult = cur.fetchall()
             cur.close()
-        
+
         else:
             return "No Results Found"
     

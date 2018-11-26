@@ -1,33 +1,33 @@
-from flask_wtf import FlaskForm
+from flask_wtf import Form
 from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
 from flask_wysiwyg.wysiwyg import WysiwygField
 
-class SignupForm(FlaskForm):
-    username = StringField('User Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Your Name"})
-    email = StringField('Email' , validators=[DataRequired(), Email(), Length(min = 9)], render_kw={"placeholder": "Your Email"})
-    password = PasswordField('Password' , validators=[DataRequired(), Length(min = 8)], render_kw={"placeholder": "Password"})
+class SignupForm(Form):
+    username = StringField('User Name' , validators= [DataRequired(), Length(min =3)])
+    email = StringField('Email' , validators=[DataRequired(), Email(), Length(min = 9)])
+    password = PasswordField('Password' , validators=[DataRequired(), Length(min = 8)])
 
 ######################################################################################################################################################################
    
-class LoginForm(FlaskForm):
-    email = StringField('Email' , validators=[DataRequired, Email(), Length(min = 9, max= 50)], render_kw={"placeholder": "Email"})
-    password = PasswordField('Password' , validators=[DataRequired, Length(min = 8)], render_kw={"placeholder": "Password"})
+class LoginForm(Form):
+    email = StringField('Email' , validators=[DataRequired, Email(), Length(min = 9, max= 50)])
+    password = PasswordField('Password' , validators=[DataRequired, Length(min = 8)])
 
 ######################################################################################################################################################################
 
-class TaskForm(FlaskForm):
-    task_name = StringField('User Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Task Name"})
-    assignee = StringField('Assignee Name', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Assignee Name"})
-    project = StringField('Project', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Project Name"})
-    due_date = DateField('Due Date' ,format="%m/%d/%Y")
-    status = SelectField(u'Status', choices=[('-- --','-- --' ), ('In Progress','In Progress' ), ('Completed', 'Completed'), ('Hold', 'Hold')])
-    task_description = WysiwygField(u'Task Description' , validators= [DataRequired(), Length(max =200)], render_kw={"placeholder": "Task Description"})
+class TaskForm(Form):
+    task_name = StringField('User Name' , validators= [DataRequired(), Length(min =3)])
+    assignee = StringField('Assignee Name', validators= [DataRequired(), Length(min =3)])
+    project = StringField('Project', validators= [DataRequired(), Length(min =3)])
+    due_date = DateField('Due Date' ,format="%M/%D/%Y")
+    status = SelectField(u'Status', choices=[('-- --','None' ), ('In Progress','In Progress' ), ('Completed', 'Completed'), ('Hold', 'Hold')])
+    task_description = WysiwygField('Task Description' , validators= [DataRequired(), Length(max =200)])
 
 ######################################################################################################################################################################
 
-class ProjectForm(FlaskForm):
-    projectName = StringField('Project Name' , validators= [DataRequired(), Length(min =3)], render_kw={"placeholder": "Project Name"})
-    clientName = StringField('Client Name', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Client Name"})
-    technology = StringField('Technology', validators= [DataRequired(), Length(min =3)],render_kw={"placeholder": "Technolgy"})
+class ProjectForm(Form):
+    projectName = StringField('Project Name' , validators= [DataRequired(), Length(min =3)])
+    clientName = StringField('Client Name', validators= [DataRequired(), Length(min =3)])
+    technology = StringField('Technology', validators= [DataRequired(), Length(min =3)])
     

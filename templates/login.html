@@ -32,6 +32,16 @@
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100 p-t-85 p-b-20">
+				{% with messages = get_flashed_messages() %}
+					{% if messages %}
+					  {% for message in messages %}
+						<div class="alert alert-warning alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+						  {{message}}
+						</div>
+					  {% endfor %}
+					{% endif %}
+				{% endwith %}
 				<form class="login100-form validate-form" method="POST" action="">
 					<span class="login100-form-title p-b-70">
 						Welcome
@@ -41,13 +51,13 @@
 					</span>
 
 					<div class="wrap-input100 validate-input m-t-85 m-b-35" data-validate = "Enter username" minlength= "9">
-							{{ form.email(class="form-control-label")}}
+							{{ form.email(class="form-control-label", placeholder= "Email")}}
 						<!--<input class="input100" type="email" name="email" name="email">
 						<span class="focus-input100" data-placeholder="Username"></span>-->
 					</div>
 
 					<div class="wrap-input100 validate-input m-b-50" data-validate="Enter password" >
-							{{ form.password(class="form-control-label")}}
+							{{ form.password(class="form-control-label", placeholder= "Password")}}
 						<!--<input class="input100" type="password" name="pass" id="pass">
 						<span class="focus-input100" data-placeholder="Password"></span>-->
 					</div>

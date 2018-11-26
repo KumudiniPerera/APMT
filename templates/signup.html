@@ -14,7 +14,16 @@
 <body>
 
     <div class="main">
-
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                  {{message}}
+                </div>
+              {% endfor %}
+            {% endif %}
+        {% endwith %}
         <!-- Sign up form -->
         <section class="signup">
             <div class="container">
@@ -26,17 +35,17 @@
                                 {{ form.csrf_token }} 
                                 <div class = "form-group" >
                                     <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                    {{ form.username(class="form-control-label") }}
+                                    {{ form.username(class="form-control-label", placeholder="Your Name") }}
                                 </div>
 
                                 <div class = "form-group" >
                                     <label for="email"><i class="zmdi zmdi-email"></i></label>
-                                    {{ form.email(class="form-control-label" )}}
+                                    {{ form.email(class="form-control-label" , placeholder="Your Email" )}}
                                 </div>
 
                                 <div class = "form-group" >
                                     <label for="pass"><i class="zmdi zmdi-lock"></i></label>
-                                    {{ form.password(class="form-control-label")}}
+                                    {{ form.password(class="form-control-label", placeholder= "Password" )}}
                                 </div>
 
                             </fieldset>

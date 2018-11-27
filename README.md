@@ -2,33 +2,42 @@
  
  A project management tool using Python Flask
  
+ 
  ##################################################################################
  
- Prerequisite:
+ # Prerequisite:
    
-  #Install Flask:
+  # Install Flask 
+
     "pip install Flask"
   
-  #Install Flask-MySQLdb :
+  # Install Flask-MySQLdb 
+
     "pip install flask-mysqldb"
   
-  #Install Flask Bcrypt : 
+  # Install Flask Bcrypt 
+
   "pip install Flask-Bcrypt"
 
-  #Install pyyaml : 
+  # Install pyyaml 
+
   "pip install pyyaml"
 
-  #Install WTForms : 
+  # Install WTForms 
+
     "pip install Flask-WTF"
 
-  #Install flask-wysiwyg 0.1 :
+  # Install flask-wysiwyg 0.1
+
     "pip install flask-wysiwyg"
 
-  # Install Flask-JWT
+  # Install Flask-JWT 
+
     "pip install Flask-JWT"
 
 ###################################################################################
 
-Run : 
+# Run : 
+
   Python app.py
   

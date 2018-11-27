@@ -20,6 +20,7 @@ from user import User
 from forms import SignupForm, LoginForm, TaskForm, ProjectForm
 
 app = Flask(__name__)
+login_manager = LoginManager()
 
 # ------------------------------ Configure DB ------------------------------------------------ #
 

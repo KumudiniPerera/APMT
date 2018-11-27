@@ -1,11 +1,8 @@
- APMT | For a Better Project Management
+ # APMT | For a Better Project Management
  
- A project management tool using Python Flask
+ # A project management tool using Python Flask
  
- 
- ##################################################################################
- 
- # Prerequisite:
+ # Prerequisites:
    
   # Install Flask 
 

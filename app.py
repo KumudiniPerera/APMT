@@ -50,6 +50,7 @@ mail = Mail(app)
 # ------------------------------ Dashboard ---------------------------------------------------- #
 
 @app.route('/index')
+#@roles_required('Admin')
 def main():
     return render_template('dashboard.html')
 

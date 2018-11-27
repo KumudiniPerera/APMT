@@ -3,7 +3,8 @@
  A project management tool using Python Flask
  
  ##################################################################################
- prerequisite:
+ 
+ Prerequisite:
    
   Install Flask : "pip install Flask"
  
@@ -18,5 +19,6 @@
   Install flask-wysiwyg 0.1 : "pip install flask-wysiwyg"
 
 ###################################################################################
- Run : 
+
+Run : 
   Python app.py

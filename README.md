@@ -5,27 +5,28 @@
  ##################################################################################
  prerequisite:
    
-  #Install Flask : 
+  #Install Flask:
     "pip install Flask"
- 
-  #Install Flask-MySQLdb : 
+  
+  #Install Flask-MySQLdb :
     "pip install flask-mysqldb"
   
   #Install Flask Bcrypt : 
-    "pip install Flask-Bcrypt"
+  "pip install Flask-Bcrypt"
 
   #Install pyyaml : 
-    "pip install pyyaml"
+  "pip install pyyaml"
 
   #Install WTForms : 
     "pip install Flask-WTF"
 
-  #Install flask-wysiwyg 0.1 : 
+  #Install flask-wysiwyg 0.1 :
     "pip install flask-wysiwyg"
 
-  # Install Flask-User
-    "pip install Flask-User"
+  # Install Flask-JWT
+    "pip install Flask-JWT"
 
 ###################################################################################
  Run : 
   Python app.py
+  

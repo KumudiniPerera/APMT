@@ -1,5 +1,8 @@
 from flask import Flask, render_template,request, redirect, url_for, session, flash
 
+#Flask Login
+from flask_login import login_manager, UserMixin, login_user, login_required, logout_user, current_user, LoginManager 
+
 #Mysql DB 
 from flask_mysqldb import MySQL, MySQLdb
 
@@ -8,6 +11,9 @@ from flask_wysiwyg.wysiwyg import WysiwygField
 
 #Email  
 from flask_mail import Mail,Message
+
+#Role based authentication flask-user
+from flask_user import roles_required
 
 import bcrypt
 import sys
@@ -19,8 +25,16 @@ from user import User
 #Forms
 from forms import SignupForm, LoginForm, TaskForm, ProjectForm
 
+#Import flask-admin
+#from flask_admin import Admin
+
 app = Flask(__name__)
+
+#Flask-Login
 login_manager = LoginManager()
+login_manager.init_app(app)
+
+#admin = Admin(app)
 
 # ------------------------------ Configure DB ------------------------------------------------ #
 
@@ -35,23 +49,19 @@ mysql = MySQL(app)
 
 # ------------------------------ Configure Mail ------------------------------------------------ #
 
-app.config.update(dict(
+email = yaml.load(open('email.yaml'))
+app.config['MAIL_SERVER'] = email['mail_server']
+app.config['MAIL_PORT'] = email['mail_port']
+app.config['MAIL_USERNAME'] = email['mail_username']
+app.config['MAIL_PASSWORD'] = email['mail_password']
+app.config['MAIL_USE_TLS'] = email['mail_use_tls']
+app.config['MAIL_USE_SSL'] = email['mail_use_ssl']
 
-    DEBUG = True,
-    MAIL_SERVER ='smtp.gmail.com',
-    MAIL_PORT = 465,
-    MAIL_USERNAME = 'dinlanka123@gmail.com',
-    MAIL_PASSWORD = 'dinlanka@123',
-    MAIL_USE_TLS = False,
-    MAIL_USE_SSL = True,
-
-    ))
 mail = Mail(app)
 
 # ------------------------------ Dashboard ---------------------------------------------------- #
 
 @app.route('/index')
-#@roles_required('Admin')
 def main():
     return render_template('dashboard.html')
 
@@ -125,6 +135,7 @@ def login():
 # ------------------------------ Logout ---------------------------------------------------- #
 
 @app.route('/logout')
+@login_required
 def logout():
     session.clear()
 
@@ -140,6 +151,7 @@ def user():
 # ------------------------------ Table- user ---------------------------------------------------- #
 
 @app.route('/table-list')
+@login_required
 def tableList():
 
     cur = mysql.connection.cursor()
@@ -168,6 +180,8 @@ def tableList():
 # ------------------------------ Delete user ---------------------------------------------------- #  
 
 @app.route('/delete-user/<string:id>')
+@login_required
+@roles_required('Admin')
 def delete_user(id):
     try:
         cur = mysql.connection.cursor()
@@ -186,6 +200,8 @@ def delete_user(id):
 # ------------------------------ Update user ---------------------------------------------------- #
 
 @app.route('/edit-user/', methods= ['GET','POST'])
+@login_required
+@roles_required('Admin')
 def edit_user():
     
     print("that")
@@ -214,6 +230,8 @@ def edit_user():
 # ------------------------------ Add Tasks ---------------------------------------------------- #
 
 @app.route('/task', methods= ['GET','POST'])
+@login_required
+@roles_required('Admin')
 def tasks():
     form =TaskForm()
     
@@ -242,6 +260,8 @@ def tasks():
 # ------------------------------ Delete Task ---------------------------------------------------- #  
 
 @app.route('/delete-task/<string:id>')
+@login_required
+@roles_required('Admin')
 def delete_task(id):
     try:
         cur = mysql.connection.cursor()
@@ -260,6 +280,8 @@ def delete_task(id):
 # ------------------------------ Update Task---------------------------------------------------- #
 
 @app.route('/edit-task/', methods= ['GET','POST'])
+@login_required
+@roles_required('Admin')
 def edit_task():
     
     if request.method == 'POST':
@@ -292,6 +314,8 @@ def edit_task():
 # ------------------------------ Add Projects ---------------------------------------------------- #
 
 @app.route('/project', methods= ['GET','POST'])
+@login_required
+@roles_required('Admin')
 def project():
 
     form =ProjectForm()
@@ -317,6 +341,8 @@ def project():
 # ------------------------------ Delete Project ---------------------------------------------------- #  
 
 @app.route('/delete-project/<string:id>')
+@login_required
+@roles_required('Admin')
 def delete_project(id):
     try:
         cur = mysql.connection.cursor()
@@ -335,6 +361,8 @@ def delete_project(id):
 # ------------------------------ Update Project ---------------------------------------------------- #
 
 @app.route('/edit-project/', methods= ['GET','POST'])
+@login_required
+@roles_required('Admin')
 def edit_project():
     
     if request.method == 'POST':
@@ -362,12 +390,14 @@ def edit_project():
 # ------------------------------ Notifications ---------------------------------------------------- #
 
 @app.route('/notifications')
+@login_required
 def notifications():
     return render_template('notifications.html')
 
 # ------------------------------ Search ---------------------------------------------------- #
 
 @app.route("/search", methods=['GET', 'POST'])
+@login_required
 def search():
 
     if request.method == 'POST':
@@ -391,7 +421,8 @@ def search():
 # ----------------------------- Mail ----------------------------------------------------- #
 
 @app.route("/mail")
-def email():
+#@login_required
+def Email():
 
     msg = Message('Hello', sender = 'dinlanka123@gmail.com', recipients = ['kumudiniaccura@gmail.com'])
     msg.body = "This is the email body"

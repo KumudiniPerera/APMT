@@ -14,11 +14,11 @@
   
   # Install Flask Bcrypt 
 
-  "pip install Flask-Bcrypt"
+    "pip install Flask-Bcrypt"
 
   # Install pyyaml 
 
-  "pip install pyyaml"
+    "pip install pyyaml"
 
   # Install WTForms 
 
@@ -28,11 +28,21 @@
 
     "pip install flask-wysiwyg"
 
-  # Install Flask-JWT 
+  # Install flask-user
 
-    "pip install Flask-JWT"
+    "pip install Flask-User"
 
-###################################################################################
+  # Install flask-login
+
+    "pip install flask-login"
+
+================================No need===========================================
+  # Install flask-Admin
+
+    "pip install Flask-Admin"
+
+
+##################################################################################
 
 # Run : 
 

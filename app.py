@@ -15,6 +15,8 @@ from flask_mail import Mail,Message
 #Role based authentication flask-user
 from flask_user import roles_required
 
+from itsdangerous import URLSafeTimedSerializer
+
 import bcrypt
 import sys
 import yaml
@@ -33,8 +35,6 @@ app = Flask(__name__)
 #Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-#admin = Admin(app)
 
 # ------------------------------ Configure DB ------------------------------------------------ #
 
@@ -151,7 +151,7 @@ def user():
 # ------------------------------ Table- user ---------------------------------------------------- #
 
 @app.route('/table-list')
-@login_required
+#@login_required
 def tableList():
 
     cur = mysql.connection.cursor()
@@ -230,8 +230,8 @@ def edit_user():
 # ------------------------------ Add Tasks ---------------------------------------------------- #
 
 @app.route('/task', methods= ['GET','POST'])
-@login_required
-@roles_required('Admin')
+#@login_required
+#@roles_required('Admin')
 def tasks():
     form =TaskForm()
     
@@ -429,6 +429,44 @@ def Email():
     mail.send(msg)
     
     return "Sent"
+
+# ----------------------------- Reset password ----------------------------------------------------- #
+
+@app.route('/reset')
+def send_password_reset_email(user_email):
+    password_reset_serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+ 
+    password_reset_url = url_for(
+        'users.reset_with_token',
+        token = password_reset_serializer.dumps(user_email, salt='password-reset-salt'),
+        _external=True)
+ 
+    html = render_template(
+        'email_password_reset.html',
+        password_reset_url=password_reset_url)
+ 
+    send_email('Password Reset Requested', [user_email], html)
+
+@app.route('/reset/<token>', methods=["GET", "POST"])
+def reset_with_token(token):
+    try:
+        email = ts.loads(token, salt="recover-key", max_age=86400)
+    except:
+        abort(404)
+ 
+    form = PasswordForm()
+ 
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=email).first_or_404()
+ 
+        user.password = form.password.data
+ 
+        db.session.add(user)
+        db.session.commit()
+ 
+        return redirect(url_for('signin'))
+ 
+    return render_template('reset_with_token.html', form=form, token=token)
 
 # ------------------------------ Main ---------------------------------------------------- #
 

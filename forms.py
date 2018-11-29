@@ -22,7 +22,8 @@ class TaskForm(Form):
     project = StringField('Project', validators= [DataRequired(), Length(min =3)])
     due_date = DateField('Due Date' ,format="%M/%D/%Y")
     status = SelectField(u'Status', choices=[('-- --','None' ), ('In Progress','In Progress' ), ('Completed', 'Completed'), ('Hold', 'Hold')])
-    task_description = WysiwygField('Task Description' , validators= [DataRequired(), Length(max =200)])
+    task_description =TextAreaField ('Task Description' , validators= [DataRequired(), Length(max =200)])
+#WysiwygField
 
 ######################################################################################################################################################################
 
@@ -30,4 +31,13 @@ class ProjectForm(Form):
     projectName = StringField('Project Name' , validators= [DataRequired(), Length(min =3)])
     clientName = StringField('Client Name', validators= [DataRequired(), Length(min =3)])
     technology = StringField('Technology', validators= [DataRequired(), Length(min =3)])
-    
+
+#######################################################################################################################################################################
+
+class EmailForm(Form):
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(min=6, max=40)])
+
+#########################################################################################################################################################################
+
+class PasswordForm(Form):
+    password = PasswordField('Password', validators=[DataRequired()])

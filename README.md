@@ -24,10 +24,6 @@
 
     "pip install Flask-WTF"
 
-  # Install flask-wysiwyg 0.1
-
-    "pip install flask-wysiwyg"
-
   # Install flask-user
 
     "pip install Flask-User"

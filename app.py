@@ -1,13 +1,10 @@
-from flask import Flask, render_template,request, redirect, url_for, session, flash
+from flask import Flask, render_template,request, redirect, url_for, session, flash, abort
 
 #Flask Login
 from flask_login import login_manager, UserMixin, login_user, login_required, logout_user, current_user, LoginManager 
 
 #Mysql DB 
 from flask_mysqldb import MySQL, MySQLdb
-
-#Import WYSIWYG
-from flask_wysiwyg.wysiwyg import WysiwygField
 
 #Email  
 from flask_mail import Mail,Message
@@ -20,12 +17,13 @@ from itsdangerous import URLSafeTimedSerializer
 import bcrypt
 import sys
 import yaml
-import smtplib
+from smtplib import SMTP
+import re
 
 from user import User
 
 #Forms
-from forms import SignupForm, LoginForm, TaskForm, ProjectForm
+from forms import SignupForm, LoginForm, TaskForm, ProjectForm, PasswordForm, EmailForm
 
 #Import flask-admin
 #from flask_admin import Admin
@@ -54,7 +52,7 @@ app.config['MAIL_SERVER'] = email['mail_server']
 app.config['MAIL_PORT'] = email['mail_port']
 app.config['MAIL_USERNAME'] = email['mail_username']
 app.config['MAIL_PASSWORD'] = email['mail_password']
-app.config['MAIL_USE_TLS'] = email['mail_use_tls']
+#app.config['MAIL_USE_TLS'] = email['mail_use_tls']
 app.config['MAIL_USE_SSL'] = email['mail_use_ssl']
 
 mail = Mail(app)
@@ -204,7 +202,6 @@ def delete_user(id):
 @roles_required('Admin')
 def edit_user():
     
-    print("that")
     if request.method == 'POST':
         print("that")
         
@@ -245,9 +242,10 @@ def tasks():
         due_date = task_details['due_date']
         status = task_details['status']
         task_description = task_details['task_description']
+        notag = re.sub("<.*?>", " ", task_description)
         
         cur = mysql.connection.cursor()
-        cur.execute ("INSERT INTO `task`(`Task_Name`, `Task_description`, `Due_Date`, `Status`, `Project_Name`, `Assignee`) VALUES (%s, %s, %s, %s, %s, %s)",(task_name, task_description, due_date, status, project, assignee  ))
+        cur.execute ("INSERT INTO `task`(`Task_Name`, `Task_description`, `Due_Date`, `Status`, `Project_Name`, `Assignee`) VALUES (%s, %s, %s, %s, %s, %s)",(task_name, notag, due_date, status, project, assignee  ))
         mysql.connection.commit()
 
         flash('Task added successfully!')
@@ -260,8 +258,8 @@ def tasks():
 # ------------------------------ Delete Task ---------------------------------------------------- #  
 
 @app.route('/delete-task/<string:id>')
-@login_required
-@roles_required('Admin')
+#@login_required
+#@roles_required('Admin')
 def delete_task(id):
     try:
         cur = mysql.connection.cursor()
@@ -397,18 +395,22 @@ def notifications():
 # ------------------------------ Search ---------------------------------------------------- #
 
 @app.route("/search", methods=['GET', 'POST'])
-@login_required
+#@login_required
 def search():
 
     if request.method == 'POST':
-        print("2")
 
         search = request.form['search']
+    
         cur = mysql.connection.cursor()
-        result = cur.execute (" SELECT * FROM `task` WHERE `Task_Name` OR `Task_description` OR `Project_Name` OR `Assignee`= %s", (search))
-        #result1 = cur.execute (" SELECT * FROM `user` WHERE `userName` OR `Email` = %s", (search))
-        #result2 = cur.execute (" SELECT * FROM `project` WHERE `Project` oR `Project` OR `Technology` = %s", (search))
-
+        result = cur.execute (" SELECT * FROM `task` WHERE `Task_Name` LIKE '%%%s%%' OR `Task_description` LIKE '%%%s%%' OR `Project_Name` LIKE '%%%s%%' OR `Assignee` LIKE '%%%s%%' ",(search, search, search, search))
+        
+        #cur = mysql.connection.cursor()
+        #result1 = cur.execute (" SELECT * FROM `user` WHERE `userName` LIKE '%%%s%%' OR `Email` LIKE '%%%s%%' ", (search, search))
+        
+        #cur = mysql.connection.cursor()
+        #result2 = cur.execute (" SELECT * FROM `project` WHERE `Project` LIKE '%%%s%%' OR `Project` LIKE '%%%s%%' OR `Technology` LIKE '%%%s%%'", (search, search, search))
+ 
         if result>0:
             searchresult = cur.fetchall()
             cur.close()
@@ -472,4 +474,5 @@ def reset_with_token(token):
 
 if __name__ == "__main__":
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+    ts = URLSafeTimedSerializer(app.secret_key)
     app.run(debug=True)

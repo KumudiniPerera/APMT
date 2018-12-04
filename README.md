@@ -32,6 +32,10 @@
 
     "pip install flask-login"
 
+  # Install flask-SocketIO
+
+    "pip install flask-socketio"
+
 ================================No need===========================================
   # Install flask-Admin
 

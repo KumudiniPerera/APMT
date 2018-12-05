@@ -14,6 +14,12 @@ from flask_user import roles_required
 
 from itsdangerous import URLSafeTimedSerializer
 
+# SoceketIO for chat tool
+#from flask_socketio import SocketIO
+
+#Commenting system
+from flask_disqus import Disqus
+
 import bcrypt
 import sys
 import yaml
@@ -29,6 +35,8 @@ from forms import SignupForm, LoginForm, TaskForm, ProjectForm, PasswordForm, Em
 #from flask_admin import Admin
 
 app = Flask(__name__)
+#socketio = SocketIO(app)
+disq = Disqus(app)
 
 #Flask-Login
 login_manager = LoginManager()
@@ -167,7 +175,7 @@ def tableList():
         cur.close()
 
     cur = mysql.connection.cursor()
-    resultvalue2 = cur.execute (" SELECT * FROM `task` ")   
+    resultvalue2 = cur.execute (" SELECT * FROM `task` ")  
 
     if resultvalue2>0:
         taskDetails = cur.fetchall()
@@ -278,8 +286,8 @@ def delete_task(id):
 # ------------------------------ Update Task---------------------------------------------------- #
 
 @app.route('/edit-task/', methods= ['GET','POST'])
-@login_required
-@roles_required('Admin')
+#@login_required
+#@roles_required('Admin')
 def edit_task():
     
     if request.method == 'POST':
@@ -470,9 +478,37 @@ def reset_with_token(token):
  
     return render_template('reset_with_token.html', form=form, token=token)
 
+# ------------------------------ Chat ---------------------------------------------------- #
+
+@app.route('/session')
+
+def sessions():
+    return render_template('session.html')
+    
+# ------------------------------ Task Descriptions ---------------------------------------------------- #
+
+#@app.route('/task-details/<string:id>')
+#def task_details(id):
+
+ #   return 'Hayyu :P'
+   # return render_template('session.html')
+    
+
+@app.route('/kanban')
+def kanban_chart():
+
+    cur = mysql.connection.cursor()
+    resultvalue2 = cur.execute (" SELECT * FROM `task` ")  
+
+    if resultvalue2>0:
+        taskDetails = cur.fetchall()
+        cur.close()
+
+    return render_template ('kanban.html', taskDetails=taskDetails)
 # ------------------------------ Main ---------------------------------------------------- #
 
 if __name__ == "__main__":
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
     ts = URLSafeTimedSerializer(app.secret_key)
+    #socketio.run(app, debug=True)
     app.run(debug=True)

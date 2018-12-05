@@ -45,34 +45,34 @@
                         <div class="row">
                             <div class="col-sm-12 form-group">
                                 <label for="name"> Task Name:</label>
-                                {{ form.task_name(class="form-control", placeholder = "Task Name")}}
+                                {{ form.task_name(class="form-control", placeholder = "Task Name" required)}}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6 form-group">
                                 <label for="name"> Assignee Name:</label>
-                                {{ form.assignee(class="form-control", placeholder= "Assignee Name")}}
+                                {{ form.assignee(class="form-control", placeholder= "Assignee Name", required)}}
                             </div>
 
                             <div class="col-sm-6 form-group">
                                 <label for="name"> Project Name:</label>
-                                {{ form.project(class="form-control", placeholder= "Project Name")}}
+                                {{ form.project(class="form-control", placeholder= "Project Name", required)}}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6 form-group">
                                 <label for="name"> Due Date:</label>
-                                <input type="date" class="form-control" name="due_date">
+                                <input type="date" class="form-control" name="due_date" required>
                             </div>
                             <div class="col-sm-6 form-group">
                                     <label for="name"> Status:</label>
-                                    {{ form.status(class="form-control")}}
+                                    {{ form.status(class="form-control", required)}}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 form-group" >
                                 <label for="name"> Task Description:</label>
-                                <textarea id="summernote" name="task_description"></textarea>
+                                <textarea id="summernote" name="task_description" required></textarea>
                             </div>
                         </div>
                         <div class="row">

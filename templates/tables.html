@@ -276,7 +276,7 @@
                       </th>
                   </thead>
                   {% for task in taskDetails %}
-                  <tr>
+                  <tr onclick="myFunction()">
                       <td>
                         {{ task.Task_ID  }}
                       </td>
@@ -513,7 +513,12 @@
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="../static/demo/demo.js"></script>
   <script src="../static/vendor/jquery/jquery.min.js"></script>
-    <script src="../static/js/main.js"></script>
+  <script src="../static/js/main.js"></script>
+  <script>
+    function myFunction() {
+      window.open("");
+    }
+  </script>
 </body>
 
 </html>

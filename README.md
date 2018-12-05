@@ -32,9 +32,9 @@
 
     "pip install flask-login"
 
-  # Install flask-SocketIO
+  # Flask-Disqus
 
-    "pip install flask-socketio"
+    "pip install Flask-Disqus==0.0.1"
 
 ================================No need===========================================
   # Install flask-Admin

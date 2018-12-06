@@ -504,7 +504,7 @@ def kanban_chart():
         taskDetails = cur.fetchall()
         cur.close()
 
-    return render_template ('kanban.html', taskDetails=taskDetails)
+    return render_template ('kanban-1.html', taskDetails=taskDetails)
 # ------------------------------ Main ---------------------------------------------------- #
 
 if __name__ == "__main__":

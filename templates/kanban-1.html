@@ -1,148 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <link rel="apple-touch-icon" sizes="76x76" href="../static/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../static/img/favicon.png">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <title>
-    APMT | For a Better Project Management
-  </title>
-  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
-  <!--     Fonts and icons     -->
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-  <!-- CSS Files -->
-  <link href="../static/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
-  <link href= "../static/css/kaban.css" rel="stylesheet">
-  <link href="../di">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Title</title>
+    <link rel="stylesheet" href="../jkanban/dist/jkanban.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Lato";
+            margin: 0;
+            padding: 0;
+        }
+        #myKanban {
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+        .success {
+            background: #00B961;
+        }
+        .info {
+            background: #2A92BF;
+        }
+        .warning {
+            background: #F4CE46;
+        }
+        .error {
+            background: #FB7D44;
+        }
+    </style>
 </head>
+<body>
+<div id="myKanban"></div>
+<button id="addDefault">Add "Default" board</button>
+<br>
+<button id="addToDo">Add element in "To Do" Board</button>
+<br>
+<button id="removeBoard">Remove "Done" Board</button>
+<br>
+<button id="removeElement">Remove "My Task Test"</button>
 
-<body class="">
-  <div class="wrapper ">
-    <div class="sidebar" data-color="purple" data-background-color="white" data-image="../static/img/sidebar-1.jpg">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
-        Tip 2: you can also add an image using data-image tag
-    -->
-      <div class="logo">
-        <a href="/index" class="simple-text logo-normal">
-          APMT
-        </a>
-      </div>
-      <div class="sidebar-wrapper">
-        <ul class="nav">
-          <li class="nav-item  ">
-            <a class="nav-link" href="/index">
-              <i class="material-icons">dashboard</i>
-              <p>Dashboard</p>
-            </a>
-          </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="/user">
-              <i class="material-icons">person</i>
-              <p>User Profile</p>
-            </a>
-          </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="/table-list">
-              <i class="material-icons">content_paste</i>
-              <p>Table List</p>
-            </a>
-          </li>
-<!--
-          <li class="nav-item active ">
-            <a class="nav-link" href="#">
-              <i class="material-icons">library_books</i>
-              <p>Typography</p>
-            </a>
-          </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="#">
-              <i class="material-icons">bubble_chart</i>
-              <p>Icons</p>
-            </a>
-          </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="#">
-              <i class="material-icons">location_ons</i>
-              <p>Maps</p>
-            </a>
-          </li>
--->          
-          <li class="nav-item ">
-            <a class="nav-link" href="/notifications">
-              <i class="material-icons">notifications</i>
-              <p>Notifications</p>
-            </a>
-          </li>
-          <!-- <li class="nav-item active-pro ">
-                <a class="nav-link" href="./upgrade.html">
-                    <i class="material-icons">unarchive</i>
-                    <p>Upgrade to PRO</p>
-                </a>
-            </li> -->
-        </ul>
-      </div>
-    </div>
-<div class="main-panel">
-  <!-- Navbar -->
-
-<footer class="footer">
-        <div class="container-fluid">
-          <nav class="float-left">
-            <ul>
-              <li>
-                <a href="/index">
-                  APMT
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  About Us
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  Licenses
-                </a>
-              </li>
-            </ul>
-          </nav>
-          <div class="copyright float-right">
-            &copy;
-            <script>
-              document.write(new Date().getFullYear())
-            </script>, made with <i class="material-icons">favorite</i> by
-            <a href="/index" target="_blank">APMT</a> for a better project management.
-          </div>
-        </div>
-      </footer>
-    </div>
-  </div>
-  <!--   Core JS Files   -->
-  <script src="../static/js/core/jquery.min.js" type="text/javascript"></script>
-  <script src="../static/js/core/popper.min.js" type="text/javascript"></script>
-  <script src="../static/js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
-  <script src="../static/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-  <!--  Google Maps Plugin    -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
-  <!-- Chartist JS -->
-  <script src="../static/js/plugins/chartist.min.js"></script>
-  <!--  Notifications Plugin    -->
-  <script src="../static/js/plugins/bootstrap-notify.js"></script>
-  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../static/js/material-dashboard.min.js?v=2.1.0" type="text/javascript"></script>
-  <!-- Material Dashboard DEMO methods, don't include it in your project! -->
-  <script src="../static/demo/demo.js"></script>
-  <script src="../static/dist/jkanban.min.js"></script>
+<script src="../jkanban/dist/jkanban.min.js"></script>
+<script>
+    var KanbanTest = new jKanban({
+        element: '#myKanban',
+        gutter: '10px',
+        widthBoard: '450px',
+        click: function (el) {
+            console.log("Trigger on all items click!");
+        },
+        buttonClick: function (el, boardId) {
+            console.log(el);
+            console.log(boardId);
+            // create a form to enter element 
+            var formItem = document.createElement('form');
+            formItem.setAttribute("class", "itemform");
+            formItem.innerHTML = '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs pull-right">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>'
+            KanbanTest.addForm(boardId, formItem);
+            formItem.addEventListener("submit", function (e) {
+                e.preventDefault();
+                var text = e.target[0].value
+                KanbanTest.addElement(boardId, {
+                    "title": text,
+                })
+                formItem.parentNode.removeChild(formItem);
+            });
+            document.getElementById('CancelBtn').onclick = function () {
+                formItem.parentNode.removeChild(formItem)
+            }
+        },
+        addItemButton: true,
+        boards: [
+            {
+                "id": "_todo",
+                "title": "To Do (Can drop item only in working)",
+                "class": "info,good",
+                "dragTo": ['_working'],
+                "item": [
+                    {
+                        "id": "_test_delete",
+                        "title": "Try drag this (Look the console)",
+                        "drag": function (el, source) {
+                            console.log("START DRAG: " + el.dataset.eid);
+                        },
+                        "dragend": function (el) {
+                            console.log("END DRAG: " + el.dataset.eid);
+                        },
+                        "drop": function(el){
+                            console.log('DROPPED: ' + el.dataset.eid )
+                        }
+                    },
+                    {
+                        "title": "Try Click This!",
+                        "click": function (el) {
+                            alert("click");
+                        },
+                    }
+                ]
+            },
+            {
+                "id": "_working",
+                "title": "Working (Try drag me too)",
+                "class": "warning",
+                "item": [
+                    {
+                        "title": "Do Something!",
+                    },
+                    {
+                        "title": "Run?",
+                    }
+                ]
+            },
+            {
+                "id": "_done",
+                "title": "Done (Can drop item only in working)",
+                "class": "success",
+                "dragTo": ['_working'],
+                "item": [
+                    {
+                        "title": "All right",
+                    },
+                    {
+                        "title": "Ok!",
+                    }
+                ]
+            }
+        ]
+    });
+    var toDoButton = document.getElementById('addToDo');
+    toDoButton.addEventListener('click', function () {
+        KanbanTest.addElement(
+            "_todo",
+            {
+                "title": "Test Add",
+            }
+        );
+    });
+    var addBoardDefault = document.getElementById('addDefault');
+    addBoardDefault.addEventListener('click', function () {
+        KanbanTest.addBoards(
+            [{
+                "id": "_default",
+                "title": "Kanban Default",
+                "item": [
+                    {
+                        "title": "Default Item",
+                    },
+                    {
+                        "title": "Default Item 2",
+                    },
+                    {
+                        "title": "Default Item 3",
+                    }
+                ]
+            }]
+        )
+    });
+    var removeBoard = document.getElementById('removeBoard');
+    removeBoard.addEventListener('click', function () {
+        KanbanTest.removeBoard('_done');
+    });
+    var removeElement = document.getElementById('removeElement');
+    removeElement.addEventListener('click', function () {
+        KanbanTest.removeElement('_test_delete');
+    });
+    var allEle = KanbanTest.getBoardElements('_todo');
+    allEle.forEach(function (item, index) {
+        //console.log(item);
+    })
+</script>
 </body>
-
 </html>

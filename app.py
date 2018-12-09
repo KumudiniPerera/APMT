@@ -426,7 +426,7 @@ def search():
         else:
             return "No Results Found"
     
-    return render_template('search.html', searchresult = searchresult)
+    return render_template('search.html', searchresult = [])
         
 # ----------------------------- Mail ----------------------------------------------------- #
 

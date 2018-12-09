@@ -408,25 +408,26 @@ def search():
 
     if request.method == 'POST':
 
-        search = request.form['search']
+        search = "%" + request.form['search'] + "%"
     
         cur = mysql.connection.cursor()
-        result = cur.execute (" SELECT * FROM `task` WHERE `Task_Name` LIKE '%%%s%%' OR `Task_description` LIKE '%%%s%%' OR `Project_Name` LIKE '%%%s%%' OR `Assignee` LIKE '%%%s%%' ",(search, search, search, search))
+        result = cur.execute (f"SELECT * FROM task WHERE Task_Name LIKE '{search}' OR Task_description LIKE '{search}' OR Project_Name LIKE '{search}' OR Assignee LIKE '{search}'")
         
         #cur = mysql.connection.cursor()
         #result1 = cur.execute (" SELECT * FROM `user` WHERE `userName` LIKE '%%%s%%' OR `Email` LIKE '%%%s%%' ", (search, search))
         
         #cur = mysql.connection.cursor()
         #result2 = cur.execute (" SELECT * FROM `project` WHERE `Project` LIKE '%%%s%%' OR `Project` LIKE '%%%s%%' OR `Technology` LIKE '%%%s%%'", (search, search, search))
- 
+        
         if result>0:
             searchresult = cur.fetchall()
             cur.close()
+            return render_template('search.html', searchresult = searchresult)
 
         else:
             return "No Results Found"
-    
-    return render_template('search.html', searchresult = searchresult)
+    else:
+        return render_template('search.html', searchresult = [])
         
 # ----------------------------- Mail ----------------------------------------------------- #
 

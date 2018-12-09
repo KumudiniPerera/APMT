@@ -28,7 +28,7 @@
         Tip 2: you can also add an image using data-image tag
     -->
       <div class="logo">
-        <a href="/" class="simple-text logo-normal">
+        <a href="/index" class="simple-text logo-normal">
           APMT
         </a>
       </div>
@@ -148,6 +148,16 @@
       </nav>
       <!-- End Navbar -->
       <div class="content">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-success alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                {{message}}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
@@ -182,7 +192,7 @@
                               {{ user.Email }}
                           </td>
                           <td class="td-actions text-right">
-                              <button type="button" rel="tooltip" title="Edit User" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#myModal{{ user.userId }}">
+                              <button type="button" rel="tooltip" title="Edit User" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#userModal{{ user.userId }}">
                                 <i class="material-icons">edit</i>
                               </button>
                               <button onclick="location.href='/delete-user/{{ user.userId  }}'" type="button" rel="tooltip" title="Remove User" class="btn btn-danger btn-link btn-sm">
@@ -191,7 +201,7 @@
                           </td>
                         </tr> 
                         <!-- Modal -->
-                        <div id="myModal{{ user.userId }}" class="modal fade" role="dialog">
+                        <div id="userModal{{ user.userId }}" class="modal fade" role="dialog">
                             <div class="modal-dialog">
 
                             <!-- Modal content-->
@@ -201,7 +211,7 @@
                                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                                 </div>
                                 <div class="modal-body">
-                                  <form action="{{ url_for('tableList') }}" method="POST" >
+                                  <form action="/edit-user/" method="POST" >
                                     <div class = "form-group" >
                                         <label for="name">Name: </label>
                                         <input type="hidden" name="id" value="{{ user.userId }}" >
@@ -214,7 +224,7 @@
                                     </div>
                                   </div>
                                     <div class="modal-footer">
-                                      <button type="button" class="btn btn-primary" data-dismiss="modal">Update</button>
+                                        <input type="submit" name="update" id="update" class="btn btn-primary" value="Update"/>
                                     </div>
                                   </div>
                                 </form>
@@ -227,12 +237,144 @@
                 </div>
               </div>
             </div>
-            <!---               PROJECT TABLE                        -->
-            <div class="col-md-9">
+
+<!------------------------   Task Table  ------------------------------------->
+
+<div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-primary">
+              <h4 class="card-title ">Tasks</h4>
+              <p class="card-category"> <a href="/task">Add Tasks +</a></p>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="">
+                    <th>
+                      ID
+                    </th>
+                    <th>
+                      Task Name
+                    </th>
+                    <th>
+                      Assignee
+                    </th>
+                    <th>
+                      Project
+                    </th>
+                    <th>
+                      Due Date
+                    </th>
+                    <th>
+                      Status
+                    </th>
+                    <th>
+                        Task Description
+                      </th>
+                  </thead>
+                  {% for task in taskDetails %}
+                  <tr onclick="myFunction()">
+                      <td>
+                        {{ task.Task_ID  }}
+                      </td>
+                      <td>
+                        {{ task.Task_Name  }}
+                      </td>
+                      <td>
+                        {{ task.Assignee  }}
+                      </td>
+                      <td>
+                        {{ task.Project_Name  }}
+                      </td>
+                      <td>
+                        {{ task.Due_Date  }}
+                      </td>
+                      <td>
+                        {{ task.Status  }}
+                      </td>
+                      <td>
+                        {{ task.Task_description  }}
+                      </td>                    
+                      <td class="td-actions text-right">
+                          <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#taskModal{{ task.Task_ID }}">
+                            <i class="material-icons">edit</i>
+                          </button>
+                          <button onclick="location.href='/delete-task/{{ task.Task_ID  }}'" type="button" rel="tooltip" title="Remove Task" class="btn btn-danger btn-link btn-sm">
+                            <i class="material-icons">close</i>
+                          </button>
+                      </td>
+                    </tr> 
+                    <!-- Modal -->
+                    <div id="taskModal{{ task.Task_ID }}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h4 class="modal-title">Update Task</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                              <form action="/edit-task/" method="POST" >
+                                <div class = "row" >
+                                  <div class="col-sm-12 form-group">
+                                    <label for="task">Task: </label>
+                                    <input type="hidden" name="id" value="{{ task.Task_ID }}" >
+
+                                    <input type="text" class="form-control" name="task" value="{{ task.Task_Name }}">       
+                                  </div>
+                                </div>
+                                <div class = "row" >
+                                    <div class="col-sm-6 form-group">
+                                      <label for="assignee">Assignee: </label>
+                                      <input type="text" class="form-control" name="assignee" value="{{ task.Assignee }}">
+                                    </div>
+
+                                    <div class="col-sm-6 form-group">
+                                      <label for="project">Project: </label>
+                                      <input type="text" class="form-control" name="project" value="{{ task.Project_Name }}">
+                                    </div>
+                                </div>
+                                <div class = "row" >
+                                    <div class="col-sm-6 form-group">
+                                      <label for="due_date">Due Date: </label>
+                                      <input type="date" class="form-control" name="due_date" value="{{ task.Due_Date }}">
+                                  </div>
+                                  <div class="col-sm-6 form-group">
+                                    <label for="status">Status: </label>
+                                    <input type="text" class="form-control" name="status" value="{{ task.Status }}">
+                                  </div>
+                                </div>
+                                <div class = "form-group" >
+                                    <label for="description">Task Description: </label>
+                                    <input type="text" class="form-control" name="description" value="{{ task.Task_description }}">
+                                </div>
+                              </div>
+                                <div class="modal-footer">
+                                    <input type="submit" name="update" id="update" class="btn btn-primary" value="Update"/>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                    {% endfor %}                        
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+            <!---------------------------- PROJECT TABLE ----------------------------------------------->
+
+            <div class="col-md-12">
               <div class="card card-plain">
                 <div class="card-header card-header-primary">
                   <h4 class="card-title mt-0"> Our Projects</h4>
-                  <p class="card-category"><a href="/task">Add a Project +</a>
+                  <p class="card-category"><a href="/project">Add a Project +</a>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -254,7 +396,7 @@
                       {% for project in projectDetails %}
                       <tr>
                           <td>
-                            {{ project.Project_ID  }}
+                              {{ project.Project_ID  }}
                           </td>
                           <td>
                               {{ project.Project }}
@@ -266,7 +408,7 @@
                               {{ project.Technology }}
                           </td>
                           <td class="td-actions text-right">
-                              <button type="button" rel="tooltip" title="Edit Project" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#myModal{{ project.Project_ID }}">
+                              <button type="button" rel="tooltip" title="Edit Project" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#projectModal{{ project.Project_ID }}">
                                 <i class="material-icons">edit</i>
                               </button>
                               <button onclick="location.href='/delete-project/{{ project.Project_ID  }}'" type="button" rel="tooltip" title="Remove Project" class="btn btn-danger btn-link btn-sm">
@@ -275,30 +417,34 @@
                           </td>
                         </tr> 
                         <!-- Modal -->
-                        <div id="myModal{{ project.Project_ID }}" class="modal fade" role="dialog">
+                        <div id="projectModal{{ project.Project_ID }}" class="modal fade" role="dialog">
                             <div class="modal-dialog">
 
                             <!-- Modal content-->
                               <div class="modal-content">
                                 <div class="modal-header">
-                                  <h4 class="modal-title">Update Users</h4>
+                                  <h4 class="modal-title">Update Project</h4>
                                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                                 </div>
                                 <div class="modal-body">
-                                  <form action="{{ url_for('tableList') }}" method="POST" >
+                                  <form action="/edit-project/" method="POST" >
                                     <div class = "form-group" >
-                                        <label for="name">Name: </label>
+                                        <label for="name">Project Name: </label>
                                         <input type="hidden" name="id" value="{{ project.Project_ID }}" >
 
-                                        <input type="text" class="form-control" name="username" value="{{ project.Project }}">       
+                                        <input type="text" class="form-control" name="project" value="{{ project.Project }}">       
                                     </div>
                                     <div class = "form-group" >
-                                        <label for="email">Email: </label>
-                                        <input type="email" class="form-control" name="email" value="{{ project.Client_Name }}">
+                                        <label for="client">Client Name: </label>
+                                        <input type="text" class="form-control" name="client" value="{{ project.Client_Name }}">
+                                    </div>
+                                    <div class = "form-group" >
+                                        <label for="technology">Technology: </label>
+                                        <input type="text" class="form-control" name="technology" value="{{ project.Technology }}">
                                     </div>
                                   </div>
                                     <div class="modal-footer">
-                                      <button type="button" class="btn btn-primary" data-dismiss="modal">Update</button>
+                                        <input type="submit" name="update" id="update" class="btn btn-primary" value="Update"/>
                                     </div>
                                   </div>
                                 </form>
@@ -314,7 +460,7 @@
           </div>
         </div>
       </div>
-    
+  
       <footer class="footer">
         <div class="container-fluid">
           <nav class="float-left">
@@ -366,6 +512,13 @@
   <script src="../static/js/material-dashboard.min.js?v=2.1.0" type="text/javascript"></script>
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="../static/demo/demo.js"></script>
+  <script src="../static/vendor/jquery/jquery.min.js"></script>
+  <script src="../static/js/main.js"></script>
+  <script>
+    function myFunction() {
+      window.open("");
+    }
+  </script>
 </body>
 
 </html>

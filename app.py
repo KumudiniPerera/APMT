@@ -441,16 +441,31 @@ def search():
         
 # ----------------------------- Mail ----------------------------------------------------- #
 
-@app.route("/mail")
+@app.route("/mail" , methods=['GET', 'POST'])
 #@login_required
 def Email():
 
-    msg = Message('Hello', sender = 'dinlanka123@gmail.com', recipients = ['kumudiniaccura@gmail.com'])
-    msg.body = "This is the email body"
-    mail.send(msg)
-    
-    return "Sent"
+    form =TaskForm()
 
+    if request.method =='POST':
+
+        assignee = "%" + request.form['assignee'] + "%"
+    
+        cur = mysql.connection.cursor()
+        result = cur.execute (f"SELECT `Email` FROM `user` WHERE `userName` LIKE '{assignee}'")
+
+        if result>0:
+
+            recipients= cur.fetchall()
+
+            recipientemail=recipients['Email']
+
+            msg = Message('Hello', sender = 'dinlanka123@gmail.com', recipients = recipientemail)
+            msg.body = "This is the email body"
+            mail.send(msg)
+
+            return 'Sent'
+    
 # ----------------------------- Reset password ----------------------------------------------------- #
 
 @app.route('/reset')
@@ -492,7 +507,7 @@ def reset_with_token(token):
 # ------------------------------ Chat ---------------------------------------------------- #
 
 
-    
+
 # ------------------------------ Task Descriptions ---------------------------------------------------- #
 
 @app.route('/task-details/<string:id>')

@@ -495,10 +495,17 @@ def reset_with_token(token):
     
 # ------------------------------ Task Descriptions ---------------------------------------------------- #
 
-@app.route('/task-details/')
-def task_details():
+@app.route('/task-details/<string:id>')
+def task_details(id):
+
+    cur = mysql.connection.cursor()
+    resultvalue = cur.execute (" SELECT * FROM `task` WHERE `Task_ID`=%s", (id,))
+
+    if resultvalue>0:
+        taskDetails = cur.fetchall()
+        cur.close()
     
-    return render_template('Description.html')
+    return render_template('Description.html', taskDetails=taskDetails)
     
 # ------------------------------ Kanban Board ---------------------------------------------------- #
 

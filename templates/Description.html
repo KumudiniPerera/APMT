@@ -20,46 +20,57 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     </head>
 
-    <body class="">
+<!--    <body class="">
         <div class="wrapper ">
           <div class="sidebar" data-color="purple" data-background-color="white" data-image="../static/img/sidebar-1.jpg">
-            <!--
+            
               Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
       
               Tip 2: you can also add an image using data-image tag
-          -->
-            <div class="logo">
-              <a href="/index" class="simple-text logo-normal">
-                APMT
-              </a>
-            </div>
-            <div class="sidebar-wrapper">
-              <ul class="nav">
-                <li class="nav-item  ">
-                  <a class="nav-link" href="/index">
-                    <i class="material-icons">dashboard</i>
-                    <p>Dashboard</p>
-                  </a>
-                </li>
-                <li class="nav-item ">
-                  <a class="nav-link" href="/user">
-                    <i class="material-icons">person</i>
-                    <p>User Profile</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/table-list">
-                    <i class="material-icons">content_paste</i>
-                    <p>Table List</p>
-                  </a>
-                </li>
-                <li class="nav-item ">
-                  <a class="nav-link" href="/notifications">
-                    <i class="material-icons">notifications</i>
-                    <p>Notifications</p>
-                  </a>
-                </li>
-              </ul>
+          
+          </div>
+          </div> -->
+          <div id="taskModal{{ task.Task_ID }}" class="wrapper ">
+            <div class="search results">
+                {% for task in taskDetails %}
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Task Name:
+                            {{ task.Task_Name  }}
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p>Assignee Name:
+                            {{ task.Assignee  }}
+                        </p>    
+                    </div>
+
+                    <div class="col-sm-6">
+                        <p> Project Name:
+                            {{ task.Project_Name  }}
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <P> Due Date:
+                            {{ task.Due_Date  }}
+                        </p>
+                    </div>
+                    <div class="col-sm-6 form-group">
+                      <p> Status:</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" >
+                        <p> Task Description:
+                            {{ task.Task_description  }}
+                        </p>    
+                    </div>
+                </div>
+                {% endfor %}   
             </div>
           </div>
     </body>

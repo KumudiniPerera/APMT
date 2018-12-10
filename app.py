@@ -414,15 +414,24 @@ def search():
         result = cur.execute (f"SELECT * FROM task WHERE Task_Name LIKE '{search}' OR Task_description LIKE '{search}' OR Project_Name LIKE '{search}' OR Assignee LIKE '{search}'")
         
         #cur = mysql.connection.cursor()
-        #result1 = cur.execute (" SELECT * FROM `user` WHERE `userName` LIKE '%%%s%%' OR `Email` LIKE '%%%s%%' ", (search, search))
+        #result1 = cur.execute (f"SELECT * FROM `user` WHERE `userName` LIKE '{search}' OR `Email` LIKE '{search}' ")
         
         #cur = mysql.connection.cursor()
-        #result2 = cur.execute (" SELECT * FROM `project` WHERE `Project` LIKE '%%%s%%' OR `Project` LIKE '%%%s%%' OR `Technology` LIKE '%%%s%%'", (search, search, search))
+        #result2 = cur.execute (f" SELECT * FROM `project` WHERE `Project` LIKE '{search}' OR `Project` LIKE '{search}' OR `Technology` LIKE '{search}'")
         
         if result>0:
-            searchresult = cur.fetchall()
+            searchresultTask= cur.fetchall()
             cur.close()
-            return render_template('search.html', searchresult = searchresult)
+
+        #if result1>0:
+            #searchUser = cur.fetchall()
+            #cur.close()
+
+        #if result2>0:
+            #searchProject = cur.fetchall()
+            #cur.close()
+
+            return render_template('search.html', searchresultTask = searchresultTask)
 
         else:
             return "No Results Found"
@@ -482,19 +491,16 @@ def reset_with_token(token):
 
 # ------------------------------ Chat ---------------------------------------------------- #
 
-@app.route('/session')
 
-def sessions():
-    return render_template('session.html')
     
 # ------------------------------ Task Descriptions ---------------------------------------------------- #
 
-#@app.route('/task-details/<string:id>')
-#def task_details(id):
-
- #   return 'Hayyu :P'
-   # return render_template('session.html')
+@app.route('/task-details/')
+def task_details():
     
+    return render_template('Description.html')
+    
+# ------------------------------ Kanban Board ---------------------------------------------------- #
 
 @app.route('/kanban')
 def kanban_chart():
@@ -506,7 +512,7 @@ def kanban_chart():
         taskDetails = cur.fetchall()
         cur.close()
 
-    return render_template ('kanban-1.html', taskDetails=taskDetails)
+    return render_template ('kanban.html', taskDetails=taskDetails)
 # ------------------------------ Main ---------------------------------------------------- #
 
 if __name__ == "__main__":

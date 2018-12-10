@@ -2,5 +2,5 @@
   mail_port: 465
   mail_username: 'dinlanka123@gmail.com'
   mail_password: 'dinlanka@123'
-  mail_use_tls: Flase
+  mail_use_tls: False
   mail_use_ssl: True

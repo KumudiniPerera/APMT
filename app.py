@@ -259,10 +259,30 @@ def tasks():
         flash('Task added successfully!')
         cur.close()
 
+        assignee = "%" + request.form['assignee'] + "%"
+    
+        cur = mysql.connection.cursor()
+        cur.execute (f"SELECT `Email` FROM `user` WHERE `userName` LIKE '{assignee}'")
+        recipient= cur.fetchone()
+        cur.close()
+
+        cur = mysql.connection.cursor()
+        resultvalue = cur.execute (" SELECT * FROM `task` WHERE `Task_Name` = %s", (task_name,))  
+
+        if resultvalue>0:
+            taskDetail = cur.fetchall()
+            cur.close()
+            
+            msg = Message('APMT', sender = 'dinlanka123@gmail.com', recipients = [recipient['Email']])
+            msg.body = "Hi,\nThere is a Task to be done. \n Please fins the deatils here.\n\n"
+            msg.html = render_template('mail.html', taskDetail=taskDetail)
+            mail.send(msg)
+
         return redirect(url_for('tableList'))
     else:
         return render_template('task.html', form=form)
-
+    
+    
 # ------------------------------ Delete Task ---------------------------------------------------- #  
 
 @app.route('/delete-task/<string:id>')
@@ -437,34 +457,6 @@ def search():
             return "No Results Found"
 
     return render_template('search.html', searchresult = [])
-
-        
-# ----------------------------- Mail ----------------------------------------------------- #
-
-@app.route("/mail" , methods=['GET', 'POST'])
-#@login_required
-def Email():
-
-    form =TaskForm()
-
-    if request.method =='POST':
-
-        assignee = "%" + request.form['assignee'] + "%"
-    
-        cur = mysql.connection.cursor()
-        result = cur.execute (f"SELECT `Email` FROM `user` WHERE `userName` LIKE '{assignee}'")
-
-        if result>0:
-
-            recipients= cur.fetchall()
-
-            recipientemail=recipients['Email']
-
-            msg = Message('Hello', sender = 'dinlanka123@gmail.com', recipients = recipientemail)
-            msg.body = "This is the email body"
-            mail.send(msg)
-
-            return 'Sent'
     
 # ----------------------------- Reset password ----------------------------------------------------- #
 
@@ -503,10 +495,6 @@ def reset_with_token(token):
         return redirect(url_for('signin'))
  
     return render_template('reset_with_token.html', form=form, token=token)
-
-# ------------------------------ Chat ---------------------------------------------------- #
-
-
 
 # ------------------------------ Task Descriptions ---------------------------------------------------- #
 

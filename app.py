@@ -274,7 +274,7 @@ def tasks():
             cur.close()
             
             msg = Message('APMT', sender = 'dinlanka123@gmail.com', recipients = [recipient['Email']])
-            msg.body = "Hi,\nThere is a Task to be done. \n Please fins the deatils here.\n\n"
+            #msg.body = "Hi,\n.\n\n"
             msg.html = render_template('mail.html', taskDetail=taskDetail)
             mail.send(msg)
 

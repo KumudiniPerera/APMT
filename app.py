@@ -210,9 +210,8 @@ def delete_user(id):
 @roles_required('Admin')
 def edit_user():
     
-    if request.method == 'POST', and form.validate():
-        print("that")
-        
+    if request.method == 'POST':
+
         user_details = request.form
 
         userid = user_details['id']
@@ -240,7 +239,7 @@ def edit_user():
 def tasks():
     form =TaskForm()
     
-    if request.method == 'POST', and form.validate():
+    if request.method == 'POST':
         
         task_details = request.form
         
@@ -475,12 +474,17 @@ def reset_password():
         cur.execute ("SELECT * FROM `user` WHERE Email= %s",(email,))
         user = cur.fetchone()
         cur.close()
+
+        print(user)
         
         if (user):
+            print("1")
             
-            form = PasswordForm
+            form = PasswordForm()
 
             if request.method == 'POST':
+
+                print("2")
 
                 passwordDetails = request.form
         
@@ -489,7 +493,7 @@ def reset_password():
         
                 
                 cur = mysql.connection.cursor()
-                cur.execute ("UPDATE `user` SET `Password`= %s  WHERE `Email`=%s", (hash_password, email))
+                cur.execute (" UPDATE `user` SET `Password`= %s  WHERE `Email`=%s", (hash_password, email))
                 mysql.connection.commit()
 
 
@@ -529,6 +533,7 @@ def kanban_chart():
         cur.close()
 
     return render_template ('kanban.html', taskDetails=taskDetails)
+
 # ------------------------------ Main ---------------------------------------------------- #
 
 if __name__ == "__main__":

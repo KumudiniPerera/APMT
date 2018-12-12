@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request, redirect, url_for, session, flash, abort
+from flask import Flask, render_template,request, redirect, url_for, session, flash, abort, Blueprint
 
 #Flask Login
 from flask_login import login_manager, UserMixin, login_user, login_required, logout_user, current_user, LoginManager 
@@ -109,7 +109,7 @@ def signup():
 def login():
     form = LoginForm()
 
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate():
 
         loginDetails = request.form
 
@@ -210,7 +210,7 @@ def delete_user(id):
 @roles_required('Admin')
 def edit_user():
     
-    if request.method == 'POST':
+    if request.method == 'POST', and form.validate():
         print("that")
         
         user_details = request.form
@@ -240,7 +240,7 @@ def edit_user():
 def tasks():
     form =TaskForm()
     
-    if request.method == 'POST':
+    if request.method == 'POST', and form.validate():
         
         task_details = request.form
         
@@ -460,42 +460,48 @@ def search():
     
 # ----------------------------- Reset password ----------------------------------------------------- #
 
-@app.route('/reset')
-def send_password_reset_email(user_email):
-    password_reset_serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
- 
-    password_reset_url = url_for(
-        'users.reset_with_token',
-        token = password_reset_serializer.dumps(user_email, salt='password-reset-salt'),
-        _external=True)
- 
-    html = render_template(
-        'email_password_reset.html',
-        password_reset_url=password_reset_url)
- 
-    send_email('Password Reset Requested', [user_email], html)
+@app.route('/reset' , methods= ['GET','POST'])
+def reset_password():
 
-@app.route('/reset/<token>', methods=["GET", "POST"])
-def reset_with_token(token):
-    try:
-        email = ts.loads(token, salt="recover-key", max_age=86400)
-    except:
-        abort(404)
- 
-    form = PasswordForm()
- 
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=email).first_or_404()
- 
-        user.password = form.password.data
- 
-        db.session.add(user)
-        db.session.commit()
- 
-        return redirect(url_for('signin'))
- 
-    return render_template('reset_with_token.html', form=form, token=token)
+    form = EmailForm()
 
+    if request.method == 'POST':
+        
+        user_details = request.form
+        
+        email =user_details['email']
+        
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur.execute ("SELECT * FROM `user` WHERE Email= %s",(email,))
+        user = cur.fetchone()
+        cur.close()
+        
+        if (user):
+            
+            form = PasswordForm
+
+            if request.method == 'POST':
+
+                passwordDetails = request.form
+        
+                password = passwordDetails['password'].encode('utf-8')
+                hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
+        
+                
+                cur = mysql.connection.cursor()
+                cur.execute ("UPDATE `user` SET `Password`= %s  WHERE `Email`=%s", (hash_password, email))
+                mysql.connection.commit()
+
+
+                return render_template('reset_password.html', form = form)
+
+        else:
+            flash('User does not exist !')
+            return redirect(url_for('reset_password'))     
+
+    else:
+        return render_template('email_password_reset.html', form = form)
+        
 # ------------------------------ Task Descriptions ---------------------------------------------------- #
 
 @app.route('/task-details/<string:id>')

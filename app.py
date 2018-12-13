@@ -29,7 +29,7 @@ import re
 from user import User
 
 #Forms
-from forms import SignupForm, LoginForm, TaskForm, ProjectForm, PasswordForm, EmailForm
+from forms import SignupForm, LoginForm, TaskForm, ProjectForm, PasswordForm
 
 #Import flask-admin
 #from flask_admin import Admin
@@ -78,7 +78,7 @@ def signup():
 
     form = SignupForm(request.form)
     
-    if request.method  == 'POST'and form.validate():
+    if request.method  == 'POST':
         #Fetch data
         userDetails = request.form
 
@@ -109,7 +109,7 @@ def signup():
 def login():
     form = LoginForm()
 
-    if request.method == 'POST' and form.validate():
+    if request.method == 'POST':
 
         loginDetails = request.form
 
@@ -462,13 +462,14 @@ def search():
 @app.route('/reset' , methods= ['GET','POST'])
 def reset_password():
 
-    form = EmailForm()
+    form = PasswordForm()
 
     if request.method == 'POST':
         
         user_details = request.form
         
         email =user_details['email']
+        password = user_details['password'].encode('utf-8')
         
         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cur.execute ("SELECT * FROM `user` WHERE Email= %s",(email,))
@@ -478,28 +479,19 @@ def reset_password():
         print(user)
         
         if (user):
-            print("1")
             
-            form = PasswordForm()
-
-            if request.method == 'POST':
-
-                print("2")
-
-                passwordDetails = request.form
-        
-                password = passwordDetails['password'].encode('utf-8')
-                hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
+            hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
         
                 
-                cur = mysql.connection.cursor()
-                cur.execute (" UPDATE `user` SET `Password`= %s  WHERE `Email`=%s", (hash_password, email))
-                mysql.connection.commit()
+            cur = mysql.connection.cursor()
+            cur.execute (" UPDATE `user` SET `Password`= %s  WHERE `Email`=%s", (hash_password, email))
+            mysql.connection.commit()
 
 
-                return render_template('reset_password.html', form = form)
+            return render_template('reset_password.html', form = form)
 
         else:
+
             flash('User does not exist !')
             return redirect(url_for('reset_password'))     
 

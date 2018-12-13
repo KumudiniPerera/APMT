@@ -40,3 +40,7 @@ class PasswordForm(Form):
     
 #########################################################################################################################################################################
 
+class RegisterForm(Form):
+    username = StringField('User Name' , validators= [DataRequired(), Length(min =3)])
+    email = StringField('Email' , validators=[DataRequired(), Email(), Length(min = 9)])
+    password = PasswordField('Password' , validators=[DataRequired(), Length(min = 8)])

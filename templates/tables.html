@@ -165,7 +165,10 @@
               <div class="card">
                 <div class="card-header card-header-primary">
                   <h4 class="card-title ">Our Members</h4>
-                  <p class="card-category"> Developers</p>
+                  <p class="card-category"> Developers
+                      {% if g.user.role == 'admin' %}
+                      <a href="/register">Add Users +</a></p>
+                      {% endif %} 
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -192,6 +195,7 @@
                           <td>
                               {{ user.Email }}
                           </td>
+                          {% if g.user.role == 'admin' %} {% endif %} 
                           <td class="td-actions text-right">
                               <button type="button" rel="tooltip" title="Edit User" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#userModal{{ user.userId }}">
                                 <i class="material-icons">edit</i>
@@ -200,6 +204,7 @@
                                 <i class="material-icons">close</i>
                               </button>
                           </td>
+                          {% endif %} 
                         </tr> 
                         <!-- Modal -->
                         <div id="userModal{{ user.userId }}" class="modal fade" role="dialog">
@@ -248,7 +253,10 @@
           <div class="card">
             <div class="card-header card-header-primary">
               <h4 class="card-title ">Tasks</h4>
-              <p class="card-category"> <a href="/task">Add Tasks +</a></p>
+              <p class="card-category"> 
+                  {% if g.user.role == 'admin' %}  
+                  <a href="/task">Add Tasks +</a></p>
+                  {% endif %}
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -298,7 +306,8 @@
                       </td>
                       <td>
                         {{ task.Task_description  }}
-                      </td>                    
+                      </td> 
+                      {% if g.user.role == 'admin' %}                   
                       <td class="td-actions text-right">
                           <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#taskModal{{ task.Task_ID }}">
                             <i class="material-icons">edit</i>
@@ -307,6 +316,7 @@
                             <i class="material-icons">close</i>
                           </button>
                       </td>
+                      {% endif %} 
                     </tr> 
                     <!-- Modal -->
                     <div id="taskModal{{ task.Task_ID }}" class="modal fade" role="dialog">
@@ -375,7 +385,10 @@
               <div class="card card-plain">
                 <div class="card-header card-header-primary">
                   <h4 class="card-title mt-0"> Our Projects</h4>
-                  <p class="card-category"><a href="/project">Add a Project +</a>
+                  <p class="card-category">
+                    {% if g.user.role == 'admin' %} 
+                      <a href="/project">Add a Project +</a>
+                    {% endif %} 
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -408,6 +421,7 @@
                           <td>
                               {{ project.Technology }}
                           </td>
+                          {% if g.user.role == 'admin' %} 
                           <td class="td-actions text-right">
                               <button type="button" rel="tooltip" title="Edit Project" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#projectModal{{ project.Project_ID }}">
                                 <i class="material-icons">edit</i>
@@ -416,6 +430,7 @@
                                 <i class="material-icons">close</i>
                               </button>
                           </td>
+                          {% endif %} 
                         </tr> 
                         <!-- Modal -->
                         <div id="projectModal{{ project.Project_ID }}" class="modal fade" role="dialog">

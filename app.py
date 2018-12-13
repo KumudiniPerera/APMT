@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request, redirect, url_for, session, flash, abort, Blueprint
+from flask import Flask, render_template,request, redirect, url_for, session, flash, abort, g
 
 #Flask Login
 from flask_login import login_manager, UserMixin, login_user, login_required, logout_user, current_user, LoginManager 
@@ -26,10 +26,14 @@ import yaml
 from smtplib import SMTP
 import re
 
-from user import User
+#from user import User
+
+#role based authentication
+from functools import wraps
+from flask_user import roles_required
 
 #Forms
-from forms import SignupForm, LoginForm, TaskForm, ProjectForm, PasswordForm
+from forms import SignupForm, LoginForm, TaskForm, ProjectForm, PasswordForm, RegisterForm
 
 #Import flask-admin
 #from flask_admin import Admin
@@ -88,7 +92,7 @@ def signup():
         hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
         
         cur = mysql.connection.cursor()
-        cur.execute ("INSERT INTO `user`(`UserName`, `Email`, `Password`) VALUES (%s, %s, %s)",(username ,email, hash_password ))
+        cur.execute ("INSERT INTO `user`(`userName`, `Email`, `Password`, `userrole_id`) VALUES (%s, %s, %s, 1)",(username ,email, hash_password ))
         mysql.connection.commit()
 
         session['name'] = username
@@ -154,6 +158,39 @@ def logout():
 def user():
     return render_template('user.html')
 
+# ------------------------------ Register Developers ---------------------------------------------------- #
+
+@app.route('/register', methods= ['GET','POST'])
+@required_roles('Admin')
+def register():
+
+    form = RegisterForm(request.form)
+    
+    if request.method  == 'POST':
+        #Fetch data
+        userDetails = request.form
+
+        username = userDetails['username']
+        email = userDetails['email']
+        password = userDetails['password'].encode('utf-8')
+        hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
+        
+        cur = mysql.connection.cursor()
+        cur.execute ("INSERT INTO `user`(`userName`, `Email`, `Password`, `userrole_id`) VALUES (%s, %s, %s, 2)",(username ,email, hash_password ))
+        mysql.connection.commit()
+
+        session['name'] = username
+        session['email'] = email
+
+        cur.close()
+
+        return redirect(url_for('main'))
+        
+    else:
+        #use the below function to see the errors in validation
+        print(form.errors)
+        return render_template('reguser.html' , form = form )
+
 # ------------------------------ Table- user ---------------------------------------------------- #
 
 @app.route('/table-list')
@@ -187,7 +224,7 @@ def tableList():
 
 @app.route('/delete-user/<string:id>')
 @login_required
-@roles_required('Admin')
+@required_roles('admin')
 def delete_user(id):
     try:
         cur = mysql.connection.cursor()
@@ -235,7 +272,7 @@ def edit_user():
 
 @app.route('/task', methods= ['GET','POST'])
 #@login_required
-#@roles_required('Admin')
+@roles_required('Admin')
 def tasks():
     form =TaskForm()
     
@@ -286,7 +323,7 @@ def tasks():
 
 @app.route('/delete-task/<string:id>')
 #@login_required
-#@roles_required('Admin')
+@roles_required('Admin')
 def delete_task(id):
     try:
         cur = mysql.connection.cursor()
@@ -306,7 +343,7 @@ def delete_task(id):
 
 @app.route('/edit-task/', methods= ['GET','POST'])
 #@login_required
-#@roles_required('Admin')
+@roles_required('Admin')
 def edit_task():
     
     if request.method == 'POST':
@@ -525,6 +562,23 @@ def kanban_chart():
         cur.close()
 
     return render_template ('kanban.html', taskDetails=taskDetails)
+
+# ------------------------------ Role based authentication ---------------------------------------------------- #
+
+def required_roles(*roles):
+   def wrapper(f):
+      @wraps(f)
+      def wrapped(*args, **kwargs):
+         if get_current_user_role() not in roles:
+            flash('Authentication error, please check your details and try again','error')
+            return redirect(url_for('index'))
+         return f(*args, **kwargs)
+      return wrapped
+   return wrapper
+ 
+def get_current_user_role():
+   return g.user.role
+
 
 # ------------------------------ Main ---------------------------------------------------- #
 

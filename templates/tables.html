@@ -1,153 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="apple-touch-icon" sizes="76x76" href="../static/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../static/img/favicon.png">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <title>
-    APMT | For a Better Project Management
-  </title>
-  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
-  <!--     Fonts and icons     -->
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-  <!-- CSS Files -->
-  <link href="../static/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
-  <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link href="../static/demo/demo.css" rel="stylesheet" />
-</head>
+{% block body %}
 
-<body class="">
-  <div class="wrapper ">
-    <div class="sidebar" data-color="purple" data-background-color="white" data-image="../static/img/sidebar-1.jpg">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
-
-        Tip 2: you can also add an image using data-image tag
-    -->
-      <div class="logo">
-        <a href="/index" class="simple-text logo-normal">
-          APMT
-        </a>
+<div class="main-panel">
+<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+    <div class="container-fluid">
+      <div class="navbar-wrapper">
+        <a class="navbar-brand" href="#pablo">Table List</a>
       </div>
-      <div class="sidebar-wrapper">
-        <ul class="nav">
-          <li class="nav-item  ">
-            <a class="nav-link" href="/index">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="navbar-toggler-icon icon-bar"></span>
+        <span class="navbar-toggler-icon icon-bar"></span>
+        <span class="navbar-toggler-icon icon-bar"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end">
+        <form class="navbar-form" action="/search" method="POST" >
+          <div class="input-group no-border">
+            <input type="text" name="search" value="" class="form-control" placeholder="Search...">
+            <button type="submit" class="btn btn-white btn-round btn-just-icon">
+              <i class="material-icons">search</i>
+              <div class="ripple-container"></div>
+            </button>
+          </div>
+        </form>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#pablo">
               <i class="material-icons">dashboard</i>
-              <p>Dashboard</p>
+              <p class="d-lg-none d-md-block">
+                Stats
+              </p>
             </a>
           </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="/user">
-              <i class="material-icons">person</i>
-              <p>User Profile</p>
-            </a>
-          </li>
-          <li class="nav-item active ">
-            <a class="nav-link" href="/table-list">
-              <i class="material-icons">content_paste</i>
-              <p>Table List</p>
-            </a>
-          </li>
-<!--          <li class="nav-item ">
-            <a class="nav-link" href="./typography.html">
-              <i class="material-icons">library_books</i>
-              <p>Typography</p>
-            </a>
-          </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="./icons.html">
-              <i class="material-icons">bubble_chart</i>
-              <p>Icons</p>
-            </a>
-          </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="./map.html">
-              <i class="material-icons">location_ons</i>
-              <p>Maps</p>
-            </a>
-          </li>
-  -->
-          <li class="nav-item ">
-            <a class="nav-link" href="/notifications">
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="material-icons">notifications</i>
-              <p>Notifications</p>
+              <span class="notification">5</span>
+              <p class="d-lg-none d-md-block">
+                Some Actions
+              </p>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="#">Mike John responded to your email</a>
+              <a class="dropdown-item" href="#">You have 5 new tasks</a>
+              <a class="dropdown-item" href="#">You're now friend with Andrew</a>
+              <a class="dropdown-item" href="#">Another Notification</a>
+              <a class="dropdown-item" href="#">Another One</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">
+              <i class="material-icons">person</i>
+              <p class="d-lg-none d-md-block">
+              </p>
             </a>
           </li>
-          <!-- <li class="nav-item active-pro ">
-                <a class="nav-link" href="./upgrade.html">
-                    <i class="material-icons">unarchive</i>
-                    <p>Upgrade to PRO</p>
-                </a>
-            </li> -->
         </ul>
       </div>
     </div>
-    <div class="main-panel">
-      <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
-        <div class="container-fluid">
-          <div class="navbar-wrapper">
-            <a class="navbar-brand" href="#pablo">Table List</a>
-          </div>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-          </button>
-          <div class="collapse navbar-collapse justify-content-end">
-            <form class="navbar-form" action="/search" method="POST">
-              
-              <div class="input-group no-border">
-                <input type="text" value="" name="search" class="form-control" placeholder="Search...">
-                <button type="submit" class="btn btn-white btn-round btn-just-icon">
-                  <i class="material-icons">search</i>
-                  <div class="ripple-container"></div>
-                </button>
-              </div>
-            </form>
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="#pablo">
-                  <i class="material-icons">dashboard</i>
-                  <p class="d-lg-none d-md-block">
-                    Stats
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="material-icons">notifications</i>
-                  <span class="notification">5</span>
-                  <p class="d-lg-none d-md-block">
-                    Some Actions
-                  </p>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="#">Mike John responded to your email</a>
-                  <a class="dropdown-item" href="#">You have 5 new tasks</a>
-                  <a class="dropdown-item" href="#">You're now friend with Andrew</a>
-                  <a class="dropdown-item" href="#">Another Notification</a>
-                  <a class="dropdown-item" href="#">Another One</a>
-                </div>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/logout">
-                  <i class="material-icons">person</i>
-                  <p class="d-lg-none d-md-block">
-                    Account
-                  </p>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-      <!-- End Navbar -->
+  </nav>
+
+<!-- End Navbar -->
       <div class="content">
           {% with messages = get_flashed_messages() %}
           {% if messages %}
@@ -166,9 +80,12 @@
                 <div class="card-header card-header-primary">
                   <h4 class="card-title ">Our Members</h4>
                   <p class="card-category"> Developers
-                      {% if g.user.role == 'admin' %}
-                      <a href="/register">Add Users +</a></p>
-                      {% endif %} 
+
+                    {% if 'auth_level' in session %}
+                        {% if session['auth_level'] == 1 %}
+                          <a href="/register">Add Users +</a></p>
+                        {% endif %}
+                        {% endif %}       
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -195,7 +112,8 @@
                           <td>
                               {{ user.Email }}
                           </td>
-                          {% if g.user.role == 'admin' %} {% endif %} 
+                          {% if 'auth_level' in session %}
+                            {% if session['auth_level'] == 1 %}
                           <td class="td-actions text-right">
                               <button type="button" rel="tooltip" title="Edit User" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#userModal{{ user.userId }}">
                                 <i class="material-icons">edit</i>
@@ -204,7 +122,8 @@
                                 <i class="material-icons">close</i>
                               </button>
                           </td>
-                          {% endif %} 
+                            {% endif %}
+                          {% endif %}
                         </tr> 
                         <!-- Modal -->
                         <div id="userModal{{ user.userId }}" class="modal fade" role="dialog">
@@ -254,9 +173,12 @@
             <div class="card-header card-header-primary">
               <h4 class="card-title ">Tasks</h4>
               <p class="card-category"> 
-                  {% if g.user.role == 'admin' %}  
-                  <a href="/task">Add Tasks +</a></p>
+                  {% if 'auth_level' in session %}
+                    {% if session['auth_level'] == 1 %}
+                      <a href="/task">Add Tasks +</a></p>
+                    {% endif %}
                   {% endif %}
+                  
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -306,17 +228,23 @@
                       </td>
                       <td>
                         {{ task.Task_description  }}
-                      </td> 
-                      {% if g.user.role == 'admin' %}                   
-                      <td class="td-actions text-right">
-                          <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#taskModal{{ task.Task_ID }}">
-                            <i class="material-icons">edit</i>
-                          </button>
-                          <button onclick="location.href='/delete-task/{{ task.Task_ID  }}'" type="button" rel="tooltip" title="Remove Task" class="btn btn-danger btn-link btn-sm">
-                            <i class="material-icons">close</i>
-                          </button>
                       </td>
-                      {% endif %} 
+                      
+                      {% if 'auth_level' in session %}
+                        {% if session['auth_level'] == 1 %}
+                                         
+                        <td class="td-actions text-right">
+                            <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#taskModal{{ task.Task_ID }}">
+                              <i class="material-icons">edit</i>
+                            </button>
+                            <button onclick="location.href='/delete-task/{{ task.Task_ID  }}'" type="button" rel="tooltip" title="Remove Task" class="btn btn-danger btn-link btn-sm">
+                              <i class="material-icons">close</i>
+                            </button>
+                        </td>
+
+                        {% endif %}
+                      {% endif %}
+                       
                     </tr> 
                     <!-- Modal -->
                     <div id="taskModal{{ task.Task_ID }}" class="modal fade" role="dialog">
@@ -386,9 +314,15 @@
                 <div class="card-header card-header-primary">
                   <h4 class="card-title mt-0"> Our Projects</h4>
                   <p class="card-category">
-                    {% if g.user.role == 'admin' %} 
-                      <a href="/project">Add a Project +</a>
-                    {% endif %} 
+
+                      {% if 'auth_level' in session %}
+                        {% if session['auth_level'] == 1 %}
+
+                          <a href="/project">Add a Project +</a>
+                        {% endif %}
+                      {% endif %}
+                        
+                    
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -421,16 +355,19 @@
                           <td>
                               {{ project.Technology }}
                           </td>
-                          {% if g.user.role == 'admin' %} 
-                          <td class="td-actions text-right">
-                              <button type="button" rel="tooltip" title="Edit Project" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#projectModal{{ project.Project_ID }}">
-                                <i class="material-icons">edit</i>
-                              </button>
-                              <button onclick="location.href='/delete-project/{{ project.Project_ID  }}'" type="button" rel="tooltip" title="Remove Project" class="btn btn-danger btn-link btn-sm">
-                                <i class="material-icons">close</i>
-                              </button>
-                          </td>
-                          {% endif %} 
+                          
+                          {% if 'auth_level' in session %}
+                            {% if session['auth_level'] == 1 %}
+                              <td class="td-actions text-right">
+                                <button type="button" rel="tooltip" title="Edit Project" class="btn btn-primary btn-link btn-sm" data-toggle="modal" data-target="#projectModal{{ project.Project_ID }}">
+                                  <i class="material-icons">edit</i>
+                                </button>
+                                <button onclick="location.href='/delete-project/{{ project.Project_ID  }}'" type="button" rel="tooltip" title="Remove Project" class="btn btn-danger btn-link btn-sm">
+                                  <i class="material-icons">close</i>
+                                </button>
+                            </td>
+                            {% endif %}
+                          {% endif %}  
                         </tr> 
                         <!-- Modal -->
                         <div id="projectModal{{ project.Project_ID }}" class="modal fade" role="dialog">
@@ -477,64 +414,4 @@
         </div>
       </div>
   
-      <footer class="footer">
-        <div class="container-fluid">
-          <nav class="float-left">
-            <ul>
-              <li>
-                <a href="/index">
-                  APMT
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  About Us
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  Licenses
-                </a>
-              </li>
-            </ul>
-          </nav>
-          <div class="copyright float-right">
-            &copy;
-            <script>
-              document.write(new Date().getFullYear())
-            </script>, made with <i class="material-icons">favorite</i> by
-            <a href="/index" target="_blank">APMT</a> for a better project managemnt.
-        </div>
-      </footer>
-    </div>
-  </div>
-  <!--   Core JS Files   -->
-  <script src="../static/js/core/jquery.min.js" type="text/javascript"></script>
-  <script src="../static/js/core/popper.min.js" type="text/javascript"></script>
-  <script src="../static/js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
-  <script src="../static/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-  <!--  Google Maps Plugin    -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
-  <!-- Chartist JS -->
-  <script src="../static/js/plugins/chartist.min.js"></script>
-  <!--  Notifications Plugin    -->
-  <script src="../static/js/plugins/bootstrap-notify.js"></script>
-  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../static/js/material-dashboard.min.js?v=2.1.0" type="text/javascript"></script>
-  <!-- Material Dashboard DEMO methods, don't include it in your project! -->
-  <script src="../static/demo/demo.js"></script>
-  <script src="../static/vendor/jquery/jquery.min.js"></script>
-  <script src="../static/js/main.js"></script>
-  <script>
-    function myFunction() {
-      window.open("");
-    }
-  </script>
-</body>
-
-</html>
+      {% endblock %}

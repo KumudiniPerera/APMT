@@ -100,10 +100,11 @@
             addItemButton: true,
             boards: [{
                     "id": "_todo",
-                    "title": "To Do (Can drop item only in working)",
+                    "title": "To Do",
                     "class": "info,good",
                     "dragTo": ['_working'],
-                    "item": [{
+                    "item": [
+                        {
                             "id": "_test_delete",
                             "title": "Try drag this (Look the console)",
                             "drag": function (el, source) {
@@ -126,7 +127,7 @@
                 },
                 {
                     "id": "_working",
-                    "title": "Working (Try drag me too)",
+                    "title": "Working",
                     "class": "warning",
                     "item": [{
                             "title": "Do Something!",
@@ -138,7 +139,7 @@
                 },
                 {
                     "id": "_done",
-                    "title": "Done (Can drop item only in working)",
+                    "title": "Done",
                     "class": "success",
                     "dragTo": ['_working'],
                     "item": [{

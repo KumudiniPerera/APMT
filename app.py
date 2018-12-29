@@ -30,7 +30,7 @@ import re
 
 #role based authentication
 from functools import wraps
-from flask_user import roles_required
+#from flask_user import roles_required
 
 #Forms
 from forms import SignupForm, LoginForm, TaskForm, ProjectForm, PasswordForm, RegisterForm
@@ -73,7 +73,10 @@ mail = Mail(app)
 
 @app.route('/index')
 def main():
-    return render_template('dashboard.html')
+    if(checkIFAuthenticated()):
+        return render_template('dashboard.html')
+    else:
+        return redirect(url_for('login'))
 
 # ------------------------------ Signup ---------------------------------------------------- #
 
@@ -126,8 +129,8 @@ def login():
         cur.close() 
         
         if (user):
-            
             if(bcrypt.hashpw(password,user['Password'].encode('utf-8'))== user['Password'].encode('utf-8')):
+                session['auth_level'] = user['userrole_id']
                 
                 return redirect(url_for('main'))
                 
@@ -145,7 +148,7 @@ def login():
 # ------------------------------ Logout ---------------------------------------------------- #
 
 @app.route('/logout')
-@login_required
+# @login_required
 def logout():
     session.clear()
 
@@ -161,7 +164,7 @@ def user():
 # ------------------------------ Register Developers ---------------------------------------------------- #
 
 @app.route('/register', methods= ['GET','POST'])
-@required_roles('Admin')
+# @required_roles('Admin')
 def register():
 
     form = RegisterForm(request.form)
@@ -224,7 +227,7 @@ def tableList():
 
 @app.route('/delete-user/<string:id>')
 @login_required
-@required_roles('admin')
+# @required_roles('admin')
 def delete_user(id):
     try:
         cur = mysql.connection.cursor()
@@ -272,7 +275,7 @@ def edit_user():
 
 @app.route('/task', methods= ['GET','POST'])
 #@login_required
-@roles_required('Admin')
+# @roles_required('Admin')
 def tasks():
     form =TaskForm()
     
@@ -389,7 +392,7 @@ def project():
         projectName = project_details['projectName']
         clientName = project_details['clientName']
         technology = project_details['technology']
-   
+
         cur = mysql.connection.cursor()
         cur.execute ("INSERT INTO `project`(`Project`, `Client_Name`, `Technology`) VALUES (%s, %s, %s)",(projectName ,clientName, technology ))
         flash('Project added successfully!')
@@ -563,21 +566,33 @@ def kanban_chart():
 
     return render_template ('kanban.html', taskDetails=taskDetails)
 
+
+
+def checkIFAuthenticated():
+    if('auth_level' in session):
+        return True
+    else:
+        return False 
+
+def returnAuthLevel():
+    return session['auth_level']
+
+
 # ------------------------------ Role based authentication ---------------------------------------------------- #
 
-def required_roles(*roles):
-    def wrapper(f):
-        @wraps(f)
-        def wrapped(*args, **kwargs):
-            if get_current_user_role() not in roles:
-                flash('Authentication error, please check your details and try again','error')
-                return redirect(url_for('index'))
-            return f(*args, **kwargs)
-        return wrapped
-    return wrapper
+# def required_roles(*roles):
+#     def wrapper(f):
+#         @wraps(f)
+#         def wrapped(*args, **kwargs):
+#             if get_current_user_role() not in roles:
+#                 flash('Authentication error, please check your details and try again','error')
+#                 return redirect(url_for('index'))
+#             return f(*args, **kwargs)
+#         return wrapped
+#     return wrapper
  
-def get_current_user_role():
-    return g.user.role
+# def get_current_user_role():
+#     return g.user.role
 
 
 # ------------------------------ Main ---------------------------------------------------- #
